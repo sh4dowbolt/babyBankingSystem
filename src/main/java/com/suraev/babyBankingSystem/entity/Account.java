@@ -1,4 +1,4 @@
-package com.suraev.babyBankingSystem.Entity;
+package com.suraev.babyBankingSystem.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +9,13 @@ import jakarta.persistence.Column;
 import java.math.BigDecimal;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.JoinColumn;
-import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.DecimalMin;       
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.persistence.OneToMany;
+import java.util.List;
+import com.suraev.babyBankingSystem.entity.User;    
 
 @Entity
 @Table(name = "account")
