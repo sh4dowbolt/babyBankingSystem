@@ -9,10 +9,14 @@ import jakarta.persistence.Column;
 import jakarta.validation.constraints.Pattern;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
 @Table(name = "email")
+@Getter
+@Setter
 public class Email {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
