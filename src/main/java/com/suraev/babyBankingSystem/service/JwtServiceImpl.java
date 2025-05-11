@@ -9,9 +9,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 
+
 @Service
-@RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService{
+    public JwtServiceImpl(
+        @Value("${jwt.secret}") String SECRET_KEY,
+        @Value("${jwt.expiration}") Long EXPIRATION_DATE
+    ){
+        this.SECRET_KEY = SECRET_KEY;
+        this.EXPIRATION_DATE = EXPIRATION_DATE;
+    }
 
     @Value("${jwt.secret}")
     private  final String SECRET_KEY;

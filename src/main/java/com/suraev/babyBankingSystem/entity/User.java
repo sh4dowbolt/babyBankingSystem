@@ -36,7 +36,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     @NotEmpty(message = "At least one phone number is required")
     private List<Phone> phones;
-    @OneToOne(mappedBy = "user")
+    @OneToMany(mappedBy = "user")
     @NotEmpty(message = "At least one email is required")
     private List<Email> emails;
     
