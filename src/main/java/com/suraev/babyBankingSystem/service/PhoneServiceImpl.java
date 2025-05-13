@@ -12,6 +12,7 @@ import com.suraev.babyBankingSystem.repository.PhoneRepository;
 import org.springframework.security.access.AccessDeniedException;
 import com.suraev.babyBankingSystem.entity.User;
 import com.suraev.babyBankingSystem.service.UserService;  
+import com.suraev.babyBankingSystem.dto.PhoneDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -29,19 +30,20 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
-    public Phone createPhone(Phone phone, Long userId) {
+    public PhoneDTO createPhone(Phone phone, Long userId) {
         User user = userServiceImpl.getUser(userId).get();
         String phoneNumber = phone.getNumber();
 
-        if(phoneRepository.existsByPhoneNumberAndUserIdNot(phoneNumber, userId)){
+        if(phoneRepository.existsByNumber(phoneNumber)){
             throw new PhoneNumbeNotFoundException("Phone number already exists");
         }
         phone.setUser(user);
-        return phoneRepository.save(phone);
+        Phone savedPhone = phoneRepository.save(phone);
+        return new PhoneDTO(savedPhone.getNumber(), savedPhone.getUser().getId());
     }
 
     @Override
-    public Phone updatePhone(Long phoneId, String phoneNumber, Long userId) {
+    public PhoneDTO updatePhone(Long phoneId, String phoneNumber, Long userId) {
         
         Phone existingPhone = phoneRepository.findById(phoneId)
         .orElseThrow(() -> new PhoneNumbeNotFoundException("Phone not found"));
@@ -52,12 +54,13 @@ public class PhoneServiceImpl implements PhoneService {
             throw new AccessDeniedException("You can only update your own phone number");
         }
     
-        if(phoneRepository.existsByPhoneNumberAndUserIdNot(phoneNumber, userId)){
+        if(phoneRepository.existsByNumber(phoneNumber)){
             throw new PhoneNumbeNotFoundException("Phone number already exists");
         }
         existingPhone.setNumber(phoneNumber);
-        return phoneRepository.save(existingPhone);
-    }
+        Phone updatedPhone = phoneRepository.save(existingPhone);
+        return new PhoneDTO(updatedPhone.getNumber(), updatedPhone.getUser().getId());
+    }   
 
     @Override
     public void deletePhone(Long id, Long userId) { 

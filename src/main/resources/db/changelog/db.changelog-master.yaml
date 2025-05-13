@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - include:
+      file: classpath:db/changelog/changes/init-schema.yml
+  - include:
+      file: classpath:db/changelog/changes/data.yml
+

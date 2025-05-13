@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import com.suraev.babyBankingSystem.exception.UserNotFoundException;
-
+import com.suraev.babyBankingSystem.dto.PhoneDTO;
 @RestController
 @RequestMapping("/phone")
 @RequiredArgsConstructor
@@ -26,24 +26,24 @@ public class PhoneController {
    
 
     @PostMapping
-    public ResponseEntity<Phone> addPhone(@RequestBody Phone phone, HttpServletRequest request) {
+    public ResponseEntity<PhoneDTO> addPhone(@RequestBody Phone phone, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         if(userId == null){
             throw new UserNotFoundException("User not found");
         }
-        Phone newPhone = phoneServiceImpl.createPhone(phone, userId);
+        PhoneDTO newPhone = phoneServiceImpl.createPhone(phone, userId);
         return ResponseEntity.ok(newPhone);
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Phone> updatePhone(@PathVariable Long phoneId, @RequestBody Phone phone, HttpServletRequest request) {
+    public ResponseEntity<PhoneDTO> updatePhone(@PathVariable Long phoneId, @RequestBody Phone phone, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         if(userId == null){
             throw new UserNotFoundException("User not found");
         }
         String phoneNumberToUpdate = phone.getNumber();
-        Phone updatedPhone = phoneServiceImpl.updatePhone(phoneId, phoneNumberToUpdate, userId);
+        PhoneDTO updatedPhone = phoneServiceImpl.updatePhone(phoneId, phoneNumberToUpdate, userId);
         return ResponseEntity.ok(updatedPhone);
     }
 

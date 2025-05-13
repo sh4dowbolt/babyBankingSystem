@@ -12,15 +12,15 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size; 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import java.util.List;  
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "user")
+@Table(name = "\"user\"")
 public class User { 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class User {
     private String name;
     @Column(name = "date_of_birth")
     @Pattern(regexp = "\\d{2}\\.\\d{2}\\.\\d{4}", message = "Date of birth must be in the format DD.MM.YYYY")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     @Column(name = "password")
     @Size(min = 8, max=500, message = "Password must be at least 8 characters long")
     private String password;

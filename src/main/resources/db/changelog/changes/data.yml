@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: sh4dowbolt
+      comments: "insert data into the database"
+      changes:
+        - sqlFile:
+            path: classpath:db/changelog/scripts/data.sql
+
+           
+

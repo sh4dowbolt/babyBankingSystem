@@ -43,8 +43,7 @@ public class JwtServiceImpl implements JwtService{
         .getBody();
         return claims.get("USER_ID", Long.class);
         } catch (Exception e){
-            //TODO: handle exception
-            throw new RuntimeException("Error extracting user ID from token: " + e.getMessage());
+            throw new RuntimeException("Invalid JWT token: " + e.getMessage());
         }
     }
     

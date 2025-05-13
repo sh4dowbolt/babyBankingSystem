@@ -13,6 +13,8 @@ import com.suraev.babyBankingSystem.service.JwtService;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,JwtService jwtService) throws Exception{
         http
@@ -21,7 +23,7 @@ public class SecurityConfig {
         .requestMatchers("/auth/**").permitAll()
         .anyRequest().authenticated()
         )
-        .addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

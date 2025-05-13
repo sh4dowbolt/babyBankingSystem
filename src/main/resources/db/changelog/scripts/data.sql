@@ -1,67 +1,39 @@
-CREATE TABLE "user" (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255),
-    date_of_birth VARCHAR(10),
-    password VARCHAR(500)
-);
-
-CREATE TABLE phone (
-    id BIGSERIAL PRIMARY KEY,
-    number VARCHAR(30) NOT NULL,
-    user_id BIGINT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
-);
-
-CREATE TABLE email (
-    id BIGSERIAL PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
-    user_id BIGINT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
-);
-
-CREATE TABLE account (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL UNIQUE,
-    balance NUMERIC(15,2) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
-);
-
 INSERT INTO "user" (name, date_of_birth, password) VALUES
-('Иван Иванов', '12.05.1990', 'password123'),
-('Мария Петрова', '23.11.1985', 'securepass456'),
-('Алексей Смирнов', '01.01.2000', 'qwerty789'),
-('Ольга Кузнецова', '15.07.1995', 'olgaPass2024'),
-('Дмитрий Соколов', '30.09.1988', 'dmitryStrongPass');
+('Иван Иванов', to_date('12.05.1990', 'dd.mm.yyyy'), 'password123'),
+('Мария Петрова', to_date('23.11.1985', 'dd.mm.yyyy'), 'securepass456'),
+('Алексей Смирнов', to_date('01.01.2000', 'dd.mm.yyyy'), 'qwerty789'),
+('Ольга Кузнецова', to_date('15.07.1995', 'dd.mm.yyyy'), 'olgaPass2024'),
+('Дмитрий Соколов', to_date('30.09.1988', 'dd.mm.yyyy'), 'dmitryStrongPass');
 
 -- Для пользователя 1
 INSERT INTO phone (number, user_id) VALUES
-('+79991234567', 1),
-('+79991234568', 1),
-('+79991234569', 1);
+('79991234567', 1),
+('79991234568', 1),
+('79991234569', 1);
 
 -- Для пользователя 2
 INSERT INTO phone (number, user_id) VALUES
-('+78881234567', 2),
-('+78881234568', 2),
-('+78881234569', 2);
+('78881234567', 2),
+('78881234568', 2),
+('78881234569', 2);
 
 -- Для пользователя 3
 INSERT INTO phone (number, user_id) VALUES
-('+77771234567', 3),
-('+77771234568', 3),
-('+77771234569', 3);
+('77771234567', 3),
+('77771234568', 3),
+('77771234569', 3);
 
 -- Для пользователя 4
 INSERT INTO phone (number, user_id) VALUES
-('+76661234567', 4),
-('+76661234568', 4),
-('+76661234569', 4);
+('76661234567', 4),
+('76661234568', 4),
+('76661234569', 4);
 
 -- Для пользователя 5
 INSERT INTO phone (number, user_id) VALUES
-('+75551234567', 5),
-('+75551234568', 5),
-('+75551234569', 5);
+('75551234567', 5),
+('75551234568', 5),
+('75551234569', 5);
 
 -- Для пользователя 1
 INSERT INTO email (email, user_id) VALUES

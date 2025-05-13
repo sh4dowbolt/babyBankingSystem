@@ -11,7 +11,8 @@ import java.io.IOException;
 import com.suraev.babyBankingSystem.service.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Configuration
 @RequiredArgsConstructor
@@ -28,6 +29,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                     String token = authHeader.substring(7);
                     try{
                     Long userId = jwtService.extractUserId(token);
+                    var authToken = new UsernamePasswordAuthenticationToken(userId, null, null);
+
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+            
                     request.setAttribute("userId", userId);
                     } catch (Exception e){
                         logger.error("Error extracting user ID from token: {}", e);
