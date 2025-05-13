@@ -10,7 +10,7 @@ public interface PhoneService {
     Optional<Phone> getPhone(Long id);
     List<Phone> getAllPhones();
     PhoneDTO createPhone(Phone phone, Long userId);
-    PhoneDTO updatePhone(Long phoneId, String phoneNumber, Long userId);
+    PhoneDTO updatePhone(Long phoneId, PhoneDTO phoneDTO);
     void deletePhone(Long id, Long userId);
 
 }

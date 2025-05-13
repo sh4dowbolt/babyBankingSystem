@@ -39,14 +39,22 @@ public class PhoneServiceImpl implements PhoneService {
         }
         phone.setUser(user);
         Phone savedPhone = phoneRepository.save(phone);
+        //TODO: add logging for create phone number + add mapping for phoneDTO
         return new PhoneDTO(savedPhone.getNumber(), savedPhone.getUser().getId());
     }
 
     @Override
-    public PhoneDTO updatePhone(Long phoneId, String phoneNumber, Long userId) {
+    public PhoneDTO updatePhone(Long phoneId, PhoneDTO phoneDTO) {
         
+        String phoneNumber = phoneDTO.number();
+        Long userId = phoneDTO.userId();
+
         Phone existingPhone = phoneRepository.findById(phoneId)
         .orElseThrow(() -> new PhoneNumbeNotFoundException("Phone not found"));
+
+        if(phoneRepository.existsByNumber(phoneNumber)){
+            throw new PhoneNumbeNotFoundException("Phone number already exists");
+        }
 
         Long existingPhoneUserId = existingPhone.getUser().getId();
 
@@ -54,11 +62,10 @@ public class PhoneServiceImpl implements PhoneService {
             throw new AccessDeniedException("You can only update your own phone number");
         }
     
-        if(phoneRepository.existsByNumber(phoneNumber)){
-            throw new PhoneNumbeNotFoundException("Phone number already exists");
-        }
+       
         existingPhone.setNumber(phoneNumber);
         Phone updatedPhone = phoneRepository.save(existingPhone);
+        //TODO: add logging for update phone number + add mapping for phoneDTO
         return new PhoneDTO(updatedPhone.getNumber(), updatedPhone.getUser().getId());
     }   
 

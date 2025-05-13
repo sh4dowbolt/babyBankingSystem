@@ -36,24 +36,26 @@ public class PhoneController {
 
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{phoneId}")
     public ResponseEntity<PhoneDTO> updatePhone(@PathVariable Long phoneId, @RequestBody Phone phone, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         if(userId == null){
             throw new UserNotFoundException("User not found");
         }
         String phoneNumberToUpdate = phone.getNumber();
-        PhoneDTO updatedPhone = phoneServiceImpl.updatePhone(phoneId, phoneNumberToUpdate, userId);
+        PhoneDTO phoneDTO = new PhoneDTO(phoneNumberToUpdate, userId);
+
+        PhoneDTO updatedPhone = phoneServiceImpl.updatePhone(phoneId, phoneDTO);
         return ResponseEntity.ok(updatedPhone);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePhone(@PathVariable Long id, HttpServletRequest request) {
+    @DeleteMapping("/{phoneId}")
+    public ResponseEntity<Void> deletePhone(@PathVariable Long phoneId, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         if(userId == null){
             throw new UserNotFoundException("User not found");
         }
-        phoneServiceImpl.deletePhone(id, userId);
+        phoneServiceImpl.deletePhone(phoneId, userId);
         return ResponseEntity.noContent().build();
     }
     
