@@ -56,6 +56,7 @@ public class PhoneController {
             throw new UserNotFoundException("User not found");
         }
         phoneServiceImpl.deletePhone(phoneId, userId);
+        
         return ResponseEntity.noContent().build();
     }
     

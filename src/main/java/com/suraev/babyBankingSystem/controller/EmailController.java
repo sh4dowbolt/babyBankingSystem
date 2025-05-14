@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import com.suraev.babyBankingSystem.entity.Email;   
 import com.suraev.babyBankingSystem.service.EmailService;
 import com.suraev.babyBankingSystem.exception.UserNotFoundException;
+import com.suraev.babyBankingSystem.dto.EmailDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,23 +24,26 @@ public class EmailController {
     private final EmailService emailServiceImpl;
 
     @PostMapping
-    public ResponseEntity<Email> createEmail(@RequestBody Email email, HttpServletRequest request) {
+    public ResponseEntity<EmailDTO> createEmail(@RequestBody Email email, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         if(userId == null){
             throw new UserNotFoundException("User not found");
         }
-        Email createdEmail = emailServiceImpl.createEmail(email, userId);
+        EmailDTO createdEmail = emailServiceImpl.createEmail(email, userId);
+
         return ResponseEntity.ok(createdEmail);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Email> updateEmail(@PathVariable Long id, @RequestBody Email email, HttpServletRequest request) {
+    public ResponseEntity<EmailDTO> updateEmail(@PathVariable Long id, @RequestBody EmailDTO emailDTO, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         if(userId == null){
             throw new UserNotFoundException("User not found");
         }
-        String emailAddressToUpdate = email.getEmail();
-        Email updatedEmail = emailServiceImpl.updateEmail(id, emailAddressToUpdate, userId);
+        String emailAddressToUpdate = emailDTO.email();
+        EmailDTO emailDTOToUpdate = new EmailDTO(emailAddressToUpdate, userId);
+
+        EmailDTO updatedEmail = emailServiceImpl.updateEmail(id, emailDTOToUpdate);
         return ResponseEntity.ok(updatedEmail);
     }
     
@@ -50,6 +54,7 @@ public class EmailController {
             throw new UserNotFoundException("User not found");
         }
         emailServiceImpl.deleteEmail(id, userId);
+        
         return ResponseEntity.noContent().build();
     }
 }

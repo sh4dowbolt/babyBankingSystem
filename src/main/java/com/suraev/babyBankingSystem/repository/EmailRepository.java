@@ -7,5 +7,5 @@ import com.suraev.babyBankingSystem.entity.Email;
 
 @Repository
 public interface EmailRepository extends JpaRepository<Email, Long> {
-    boolean existsByEmailAndUserIdNot(String email, Long userId);
+    boolean existsByEmail(String email);
 }

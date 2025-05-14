@@ -13,7 +13,7 @@ import com.suraev.babyBankingSystem.entity.User;
 import com.suraev.babyBankingSystem.exception.EmailAlreadyExistsException;
 import com.suraev.babyBankingSystem.exception.EmailNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
-
+import com.suraev.babyBankingSystem.dto.EmailDTO;
 @Service
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
@@ -32,34 +32,42 @@ public class EmailServiceImpl implements EmailService {
     }
     
     @Override
-    public Email createEmail(Email email, Long userId) {
+    public EmailDTO createEmail(Email email, Long userId) {
         User user = userServiceImpl.getUser(userId).get();
         String emailAddress = email.getEmail();
 
-        if(emailRepository.existsByEmailAndUserIdNot(emailAddress, userId)){
+        if(emailRepository.existsByEmail(emailAddress)){
             throw new EmailAlreadyExistsException("Email already exists");
         }
         email.setUser(user);
-        return emailRepository.save(email);
+        Email savedEmail = emailRepository.save(email);
+        //TODO: add logging for create email + add mapping for emailDTO
+        return new EmailDTO(savedEmail.getEmail(), savedEmail.getUser().getId());
     }
 
     @Override
-    public Email updateEmail(Long emailId, String emailAddress, Long userId) {
+    public EmailDTO updateEmail(Long emailId, EmailDTO emailDTO) {
+        String emailAddress = emailDTO.email();
+        Long userId = emailDTO.userId();
+
         Email existingEmail = emailRepository.findById(emailId)
         .orElseThrow(() -> new EmailNotFoundException("Email not found"));
+
+        if(emailRepository.existsByEmail(emailAddress)){
+            throw new EmailAlreadyExistsException("Email already exists");
+        }
 
         Long existingEmailUserId = existingEmail.getUser().getId();
 
         if(!existingEmailUserId.equals(userId)){
             throw new AccessDeniedException("You are not allowed to update this email");
         }
-
-        if(emailRepository.existsByEmailAndUserIdNot(emailAddress, userId)){
-            throw new EmailAlreadyExistsException("Email already exists");
-        }
-
+        //TODO: add logging for update email + add mapping for emailDTO
+      
         existingEmail.setEmail(emailAddress);
-        return emailRepository.save(existingEmail);
+        Email updatedEmail = emailRepository.save(existingEmail);
+        
+        return new EmailDTO(updatedEmail.getEmail(), updatedEmail.getUser().getId());
     }
 
     @Override

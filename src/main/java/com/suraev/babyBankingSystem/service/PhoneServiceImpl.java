@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;  
 import com.suraev.babyBankingSystem.exception.PhoneNumbeNotFoundException;
 import com.suraev.babyBankingSystem.repository.PhoneRepository;
+import com.suraev.babyBankingSystem.exception.PhoneNumberAlreadyExistsException;
 
 import org.springframework.security.access.AccessDeniedException;
 import com.suraev.babyBankingSystem.entity.User;
@@ -35,7 +36,7 @@ public class PhoneServiceImpl implements PhoneService {
         String phoneNumber = phone.getNumber();
 
         if(phoneRepository.existsByNumber(phoneNumber)){
-            throw new PhoneNumbeNotFoundException("Phone number already exists");
+            throw new PhoneNumberAlreadyExistsException("Phone number already exists");
         }
         phone.setUser(user);
         Phone savedPhone = phoneRepository.save(phone);
@@ -53,7 +54,7 @@ public class PhoneServiceImpl implements PhoneService {
         .orElseThrow(() -> new PhoneNumbeNotFoundException("Phone not found"));
 
         if(phoneRepository.existsByNumber(phoneNumber)){
-            throw new PhoneNumbeNotFoundException("Phone number already exists");
+            throw new PhoneNumberAlreadyExistsException("Phone number already exists");
         }
 
         Long existingPhoneUserId = existingPhone.getUser().getId();
