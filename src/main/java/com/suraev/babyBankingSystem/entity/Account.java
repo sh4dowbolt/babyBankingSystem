@@ -16,13 +16,20 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.persistence.OneToMany;
 import java.util.List;
 import com.suraev.babyBankingSystem.entity.User;    
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "account")
+@Getter
+@Setter
 public class Account {   
 
     public Account(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public Account() {
     }
 
     @Id
@@ -42,14 +49,16 @@ public class Account {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void increaseBalance() {
-    BigDecimal percentToIncrease= new BigDecimal("0.1");    
+    public boolean increaseBalance() {
+    BigDecimal percentToIncrease= new BigDecimal("1.1");    
     BigDecimal maxPercentToIncrease= new BigDecimal("2.07");    
     BigDecimal maxBalance = initialBalance.multiply(maxPercentToIncrease);
 
     if(balance.compareTo(maxBalance) < 0) {
         balance = balance.multiply(percentToIncrease);
-    } 
-        balance = maxBalance;
+        return true;
+    }
+    balance = maxBalance;
+    return false;
 }
 }
