@@ -1,9 +1,9 @@
 INSERT INTO "user" (name, date_of_birth, password) VALUES
-('Иван Иванов', to_date('12.05.1990', 'dd.mm.yyyy'), 'password123'),
-('Мария Петрова', to_date('23.11.1985', 'dd.mm.yyyy'), 'securepass456'),
-('Алексей Смирнов', to_date('01.01.2000', 'dd.mm.yyyy'), 'qwerty789'),
-('Ольга Кузнецова', to_date('15.07.1995', 'dd.mm.yyyy'), 'olgaPass2024'),
-('Дмитрий Соколов', to_date('30.09.1988', 'dd.mm.yyyy'), 'dmitryStrongPass');
+('Иван', to_date('12.05.1990', 'dd.mm.yyyy'), 'password123'),
+('Мария', to_date('23.11.1985', 'dd.mm.yyyy'), 'securepass456'),
+('Алексей', to_date('01.01.2000', 'dd.mm.yyyy'), 'qwerty789'),
+('Ольга', to_date('15.07.1995', 'dd.mm.yyyy'), 'olgaPass2024'),
+('Дмитрий', to_date('30.09.1988', 'dd.mm.yyyy'), 'dmitryStrongPass');
 
 -- Для пользователя 1
 INSERT INTO phone (number, user_id) VALUES
@@ -65,9 +65,9 @@ INSERT INTO email (email, user_id) VALUES
 ('sokolov2@outlook.com', 5),
 ('sokolov3@outlook.com', 5);
 
-INSERT INTO account (user_id, balance) VALUES
-(1, 10500.75),
-(2, 2300.00),
-(3, 987654.32),
-(4, 150.50),
-(5, 50000.00);
+INSERT INTO account (user_id, balance, initial_balance) VALUES
+(1, 10500.75, 10500.75),
+(2, 2300.00, 2300.00),
+(3, 987654.32, 987654.32),
+(4, 150.50, 150.50),
+(5, 50000.00, 50000.00);

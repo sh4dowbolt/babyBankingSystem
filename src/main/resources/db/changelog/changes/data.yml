@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: 3
       author: sh4dowbolt
       comments: "insert data into the database"
       changes:

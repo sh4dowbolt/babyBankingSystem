@@ -28,9 +28,14 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Column(name = "initial_balance")
+    @DecimalMin(value = "0.00", message = "Balance must be greater than 0")
+    private BigDecimal initialBalance;
     @Column(name = "balance")
     @DecimalMin(value = "0.00", message = "Balance must be greater than 0")
     private BigDecimal balance;
+
 
     @OneToOne
     @JoinColumn(name = "user_id")

@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: 4
       author: sh4dowbolt
       comments: "create tables"
       changes:

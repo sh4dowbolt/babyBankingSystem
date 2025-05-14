@@ -1,27 +1,28 @@
-CREATE TABLE "user" (
+CREATE TABLE IF NOT EXISTS "user" (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255),
     date_of_birth DATE,
     password VARCHAR(500)
 );
 
-CREATE TABLE phone (
+CREATE TABLE IF NOT EXISTS phone (
     id BIGSERIAL PRIMARY KEY,
     number VARCHAR(30) NOT NULL,
     user_id BIGINT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
 );
 
-CREATE TABLE email (
+CREATE TABLE IF NOT EXISTS email (
     id BIGSERIAL PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
     user_id BIGINT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
 );
 
-CREATE TABLE account (
+CREATE TABLE IF NOT EXISTS account (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL UNIQUE,
     balance NUMERIC(15,2) NOT NULL,
+    initial_balance NUMERIC(15,2) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
 );
