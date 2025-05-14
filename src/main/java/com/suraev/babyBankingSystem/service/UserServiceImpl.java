@@ -8,13 +8,12 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import com.suraev.babyBankingSystem.dto.EmailDTO;
 import com.suraev.babyBankingSystem.dto.PhoneDTO;
 import com.suraev.babyBankingSystem.dto.UserDTO;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
-
+import org.springframework.transaction.annotation.Transactional;
 
 
 
@@ -32,6 +31,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<UserDTO> searchForUsers(String name, String phoneNumber, String email, LocalDate dateOfBirth, Pageable pageable) {
         Page<User> users = userRepository
         .findAll(UserSpecification.hasName(name)

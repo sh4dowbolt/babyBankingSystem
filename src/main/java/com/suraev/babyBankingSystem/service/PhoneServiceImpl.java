@@ -9,11 +9,11 @@ import java.util.Optional;
 import com.suraev.babyBankingSystem.exception.PhoneNumbeNotFoundException;
 import com.suraev.babyBankingSystem.repository.PhoneRepository;
 import com.suraev.babyBankingSystem.exception.PhoneNumberAlreadyExistsException;
-
 import org.springframework.security.access.AccessDeniedException;
 import com.suraev.babyBankingSystem.entity.User;
 import com.suraev.babyBankingSystem.service.UserService;  
 import com.suraev.babyBankingSystem.dto.PhoneDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +22,7 @@ public class PhoneServiceImpl implements PhoneService {
     private final PhoneRepository phoneRepository;
     private final UserService userServiceImpl;
     @Override
+    @Transactional(readOnly = true)
     public Optional<Phone> getPhone(Long id) {
         return phoneRepository.findById(id);
     }
@@ -31,6 +32,7 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
+    @Transactional
     public PhoneDTO createPhone(Phone phone, Long userId) {
         User user = userServiceImpl.getUser(userId).get();
         String phoneNumber = phone.getNumber();
@@ -45,6 +47,7 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
+    @Transactional
     public PhoneDTO updatePhone(Long phoneId, PhoneDTO phoneDTO) {
         
         String phoneNumber = phoneDTO.number();
@@ -71,6 +74,7 @@ public class PhoneServiceImpl implements PhoneService {
     }   
 
     @Override
+    @Transactional
     public void deletePhone(Long id, Long userId) { 
         Phone existingPhone = phoneRepository.findById(id)  
         .orElseThrow(() -> new PhoneNumbeNotFoundException("Phone not found"));

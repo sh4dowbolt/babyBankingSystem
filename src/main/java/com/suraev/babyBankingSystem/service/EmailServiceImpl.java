@@ -14,6 +14,8 @@ import com.suraev.babyBankingSystem.exception.EmailAlreadyExistsException;
 import com.suraev.babyBankingSystem.exception.EmailNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import com.suraev.babyBankingSystem.dto.EmailDTO;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
@@ -22,16 +24,19 @@ public class EmailServiceImpl implements EmailService {
     private final UserService userServiceImpl;
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Email> getEmail(Long id) {
         return emailRepository.findById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Email> getAllEmails() {
         return emailRepository.findAll();
     }
-    
+
     @Override
+    @Transactional
     public EmailDTO createEmail(Email email, Long userId) {
         User user = userServiceImpl.getUser(userId).get();
         String emailAddress = email.getEmail();
@@ -46,6 +51,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
+    @Transactional
     public EmailDTO updateEmail(Long emailId, EmailDTO emailDTO) {
         String emailAddress = emailDTO.email();
         Long userId = emailDTO.userId();
@@ -70,7 +76,8 @@ public class EmailServiceImpl implements EmailService {
         return new EmailDTO(updatedEmail.getId(),updatedEmail.getEmail(), updatedEmail.getUser().getId());
     }
 
-    @Override
+    @Override   
+    @Transactional
     public void deleteEmail(Long id, Long userId) {
         Email existingEmail = emailRepository.findById(id)
         .orElseThrow(() -> new EmailNotFoundException("Email not found"));

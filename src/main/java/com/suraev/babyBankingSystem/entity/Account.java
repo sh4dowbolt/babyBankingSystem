@@ -28,7 +28,7 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(name = "initial_balance")
     @DecimalMin(value = "0.00", message = "Balance must be greater than 0")
     private BigDecimal initialBalance;
@@ -37,8 +37,19 @@ public class Account {
     private BigDecimal balance;
 
 
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    public void increaseBalance() {
+    BigDecimal percentToIncrease= new BigDecimal("0.1");    
+    BigDecimal maxPercentToIncrease= new BigDecimal("2.07");    
+    BigDecimal maxBalance = initialBalance.multiply(maxPercentToIncrease);
+
+    if(balance.compareTo(maxBalance) < 0) {
+        balance = balance.multiply(percentToIncrease);
+    } 
+        balance = maxBalance;
+}
 }
