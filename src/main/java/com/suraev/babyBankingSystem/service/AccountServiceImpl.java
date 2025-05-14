@@ -64,6 +64,10 @@ public class AccountServiceImpl implements AccountService{
             throw new NotEnoughMoneyToTransferException("Not enough money to transfer");
         }
 
+        if(isTheSameAccount(sourceAccount, targetAccount)) {
+            throw new IncorrectValueException("Source and target accounts are the same");
+        }
+
         BigDecimal newBalance = sourceAccount.getBalance().subtract(value);
         BigDecimal newTargetBalance = targetAccount.getBalance().add(value);
 
@@ -82,6 +86,10 @@ public class AccountServiceImpl implements AccountService{
 
     public boolean isEnoughMoneyToTransfer(Account sourceAccount) {
         return sourceAccount.getBalance().compareTo(BigDecimal.ZERO) >= 0;
+    }
+    
+    public boolean isTheSameAccount(Account sourceAccount, Account targetAccount) {
+        return sourceAccount.getId().equals(targetAccount.getId());
     }
 }
 
