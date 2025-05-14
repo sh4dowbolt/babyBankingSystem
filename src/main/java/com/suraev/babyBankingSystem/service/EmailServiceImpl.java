@@ -42,7 +42,7 @@ public class EmailServiceImpl implements EmailService {
         email.setUser(user);
         Email savedEmail = emailRepository.save(email);
         //TODO: add logging for create email + add mapping for emailDTO
-        return new EmailDTO(savedEmail.getEmail(), savedEmail.getUser().getId());
+        return new EmailDTO(savedEmail.getId(), savedEmail.getEmail(), savedEmail.getUser().getId());
     }
 
     @Override

@@ -8,10 +8,10 @@ import com.suraev.babyBankingSystem.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.data.domain.PageRequest;
-
+import com.suraev.babyBankingSystem.dto.UserDTO;
+import java.time.LocalDate;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,11 +23,11 @@ public class UserController {
     private final UserService userServiceImpl;
 
     @GetMapping
-    public Page<User> searchForUsers(
+    public Page<UserDTO> searchForUsers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String phoneNumber,
             @RequestParam(required = false) String email, 
-            @RequestParam(required = false) @DateTimeFormat(pattern = "dd.MM.yyyy") Date dateOfBirth,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate dateOfBirth,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 

@@ -1,6 +1,6 @@
 package com.suraev.babyBankingSystem.dto;
 
 
-public record PhoneDTO(String number, Long userId) {
+public record PhoneDTO(Long id, String number, Long userId) {
 }
 
