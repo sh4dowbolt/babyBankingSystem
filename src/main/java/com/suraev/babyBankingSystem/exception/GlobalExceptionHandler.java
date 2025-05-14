@@ -8,6 +8,8 @@ import com.suraev.babyBankingSystem.exception.PhoneNumberAlreadyExistsException;
 import java.util.Map;
 import java.util.HashMap;
 import jakarta.validation.ConstraintViolationException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.ExpiredJwtException;
 
 @RestControllerAdvice   
 public class GlobalExceptionHandler {
@@ -43,4 +45,10 @@ public class GlobalExceptionHandler {
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+   
+    @ExceptionHandler(JwtAuthenticationException.class)
+    public ResponseEntity<String> handleJwtAuthenticationException(JwtAuthenticationException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    }
+
 }

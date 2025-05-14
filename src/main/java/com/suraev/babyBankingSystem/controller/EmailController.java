@@ -41,7 +41,7 @@ public class EmailController {
             throw new UserNotFoundException("User not found");
         }
         String emailAddressToUpdate = emailDTO.email();
-        EmailDTO emailDTOToUpdate = new EmailDTO(emailAddressToUpdate, userId);
+        EmailDTO emailDTOToUpdate = new EmailDTO(id, emailAddressToUpdate, userId);
 
         EmailDTO updatedEmail = emailServiceImpl.updateEmail(id, emailDTOToUpdate);
         return ResponseEntity.ok(updatedEmail);

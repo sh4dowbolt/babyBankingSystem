@@ -67,7 +67,7 @@ public class EmailServiceImpl implements EmailService {
         existingEmail.setEmail(emailAddress);
         Email updatedEmail = emailRepository.save(existingEmail);
         
-        return new EmailDTO(updatedEmail.getEmail(), updatedEmail.getUser().getId());
+        return new EmailDTO(updatedEmail.getId(),updatedEmail.getEmail(), updatedEmail.getUser().getId());
     }
 
     @Override

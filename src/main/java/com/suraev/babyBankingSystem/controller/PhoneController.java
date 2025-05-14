@@ -43,7 +43,7 @@ public class PhoneController {
             throw new UserNotFoundException("User not found");
         }
         String phoneNumberToUpdate = phone.getNumber();
-        PhoneDTO phoneDTO = new PhoneDTO(phoneNumberToUpdate, userId);
+        PhoneDTO phoneDTO = new PhoneDTO(phoneId, phoneNumberToUpdate, userId);
 
         PhoneDTO updatedPhone = phoneServiceImpl.updatePhone(phoneId, phoneDTO);
         return ResponseEntity.ok(updatedPhone);

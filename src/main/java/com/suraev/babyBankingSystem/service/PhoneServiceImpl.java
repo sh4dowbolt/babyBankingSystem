@@ -41,7 +41,7 @@ public class PhoneServiceImpl implements PhoneService {
         phone.setUser(user);
         Phone savedPhone = phoneRepository.save(phone);
         //TODO: add logging for create phone number + add mapping for phoneDTO
-        return new PhoneDTO(savedPhone.getNumber(), savedPhone.getUser().getId());
+        return new PhoneDTO(savedPhone.getId(), savedPhone.getNumber(), savedPhone.getUser().getId());
     }
 
     @Override

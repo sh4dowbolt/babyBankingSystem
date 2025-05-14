@@ -7,7 +7,10 @@ import java.util.Date;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.RequiredArgsConstructor;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.ExpiredJwtException;
+import com.suraev.babyBankingSystem.exception.JwtAuthenticationException;
+
 
 
 @Service
@@ -37,14 +40,16 @@ public class JwtServiceImpl implements JwtService{
     @Override
     public Long extractUserId(String token) {
         try{
-        Claims claims = Jwts.parser()
-        .setSigningKey(SECRET_KEY)
-        .parseClaimsJws(token)
-        .getBody();
-        return claims.get("USER_ID", Long.class);
-        } catch (Exception e){
-            throw new RuntimeException("Invalid JWT token: " + e.getMessage());
+            Claims claims = Jwts.parser()
+            .setSigningKey(SECRET_KEY)
+            .parseClaimsJws(token)
+            .getBody();
+            return claims.get("USER_ID", Long.class);
+        }catch(ExpiredJwtException e){
+            throw new JwtAuthenticationException("Token expired");
+        }catch(JwtException e){
+            throw new JwtAuthenticationException("Invalid JWT token");
         }
     }
-    
+
 }
