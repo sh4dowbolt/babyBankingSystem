@@ -14,6 +14,9 @@ import com.suraev.babyBankingSystem.entity.User;
 import com.suraev.babyBankingSystem.service.UserService;  
 import com.suraev.babyBankingSystem.dto.PhoneDTO;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
+import com.suraev.babyBankingSystem.entity.UserEntityEvent;
+import com.suraev.babyBankingSystem.entity.UserEntityEventType;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +24,8 @@ public class PhoneServiceImpl implements PhoneService {
 
     private final PhoneRepository phoneRepository;
     private final UserService userServiceImpl;
+    private final ApplicationEventPublisher eventPublisher;
+
     @Override
     @Transactional(readOnly = true)
     public Optional<Phone> getPhone(Long id) {
@@ -42,6 +47,7 @@ public class PhoneServiceImpl implements PhoneService {
         }
         phone.setUser(user);
         Phone savedPhone = phoneRepository.save(phone);
+        publishEvent(savedPhone, UserEntityEventType.CREATE);
         //TODO: add logging for create phone number + add mapping for phoneDTO
         return new PhoneDTO(savedPhone.getId(), savedPhone.getNumber(), savedPhone.getUser().getId());
     }
@@ -69,6 +75,7 @@ public class PhoneServiceImpl implements PhoneService {
        
         existingPhone.setNumber(phoneNumber);
         Phone updatedPhone = phoneRepository.save(existingPhone);
+        publishEvent(updatedPhone, UserEntityEventType.UPDATE);
         //TODO: add logging for update phone number + add mapping for phoneDTO
         return new PhoneDTO(updatedPhone.getId(), updatedPhone.getNumber(), updatedPhone.getUser().getId());
     }   
@@ -85,6 +92,11 @@ public class PhoneServiceImpl implements PhoneService {
             throw new AccessDeniedException("You can only delete your own phone number");
         }
         phoneRepository.deleteById(id);
+    }
+
+    private void publishEvent(Phone phone, UserEntityEventType eventType){
+        Long userId = phone.getUser().getId();
+        eventPublisher.publishEvent(new UserEntityEvent(userId, eventType));
     }
     
 }
