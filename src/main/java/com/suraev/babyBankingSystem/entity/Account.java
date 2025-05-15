@@ -53,19 +53,20 @@ public class Account {
        
     BigDecimal maxBalance = initialBalance.multiply(maxPercentToIncrease);
 
-    if(balance.compareTo(maxBalance) >= 0) {
+    if(balance.abs().compareTo(maxBalance) >= 0) {
         balance = maxBalance;
         return false;
     } 
 
-    BigDecimal newBalance = balance.multiply(percentToIncrease);
+    int sign = balance.signum();
+
+    BigDecimal newBalance = balance.abs().multiply(percentToIncrease);
     
     if(newBalance.compareTo(maxBalance) > 0) {
         balance = maxBalance;
         return false;
     }
-
-    balance = newBalance;
+    balance = sign < 0 ? newBalance.negate() : newBalance;
     return true;
         
  }

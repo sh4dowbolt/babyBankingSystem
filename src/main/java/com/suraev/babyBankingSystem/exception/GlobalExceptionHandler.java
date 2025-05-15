@@ -50,5 +50,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleJwtAuthenticationException(JwtAuthenticationException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
-
+    @ExceptionHandler(NotEnoughMoneyToTransferException.class)
+    public ResponseEntity<String> handleNotEnoughMoneyToTransferException(NotEnoughMoneyToTransferException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+    @ExceptionHandler(IncorrectValueException.class)
+    public ResponseEntity<String> handleIncorrectValueException(IncorrectValueException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+    @ExceptionHandler(AccountSenderNotBeRecipientException.class)
+    public ResponseEntity<String> handleAccountSenderNotBeRecipientException(AccountSenderNotBeRecipientException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }
+

@@ -59,14 +59,13 @@ public class AccountServiceImpl implements AccountService{
             throw new IncorrectValueException("Value is incorrect");
         }
 
-
         Account sourceAccount = accountRepository.findByUserId(sourceUserId)
         .orElseThrow(() -> new AccountNotFoundException("Source account not found"));
         Account targetAccount = accountRepository.findByUserId(targetUserId)
         .orElseThrow(() -> new AccountNotFoundException("Target account not found"));
 
 
-        if(!isEnoughMoneyToTransfer(sourceAccount)) {
+        if(!isEnoughMoneyToTransfer(sourceAccount, value)) {
             throw new NotEnoughMoneyToTransferException("Not enough money to transfer");
         }
 
@@ -90,8 +89,8 @@ public class AccountServiceImpl implements AccountService{
         return value.compareTo(BigDecimal.ZERO) > 0;
     }
 
-    public boolean isEnoughMoneyToTransfer(Account sourceAccount) {
-        return sourceAccount.getBalance().compareTo(BigDecimal.ZERO) >= 0;
+    public boolean isEnoughMoneyToTransfer(Account sourceAccount, BigDecimal value) {
+        return sourceAccount.getBalance().compareTo(value) >= 0;
     }
     
     public boolean isTheSameAccount(Account sourceAccount, Account targetAccount) {
