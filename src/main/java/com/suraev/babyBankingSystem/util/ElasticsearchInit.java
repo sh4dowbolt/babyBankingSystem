@@ -17,10 +17,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import com.suraev.babyBankingSystem.entity.elasticModel.PhoneElastic;
 import com.suraev.babyBankingSystem.entity.elasticModel.EmailElastic;
-
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ElasticsearchInit {    
 
     private final UserRepository userRepository;
@@ -28,12 +29,25 @@ public class ElasticsearchInit {
 
     @PostConstruct
     public void initElasticsearchData() {
+
+        try {
+        if (!isIndexExists(UserElastic.class)) {
+            log.info("intializing elasticsearch index for users");
+        
         List<User> users = userRepository.findAll();
         List<UserElastic> userElastic = users.stream()
         .map(this::convertToUserElastic)
         .collect(Collectors.toList());  
 
         elasticsearchOperations.save(userElastic);
+
+        log.info("succesfully initialized elasticsearch index for users");
+        } else {
+            log.info("elasticsearch index for users already exists, skipping initialization");
+        }
+    } catch (Exception e) {
+        log.error("error initializing elasticsearch index for users", e);
+    }
     }
 
     private UserElastic convertToUserElastic(User user) {
@@ -45,4 +59,9 @@ public class ElasticsearchInit {
        .dateOfBirth(user.getDateOfBirth())
        .build();
     }
+
+    private boolean isIndexExists(Class<?> indexType) {
+        return elasticsearchOperations.indexOps(indexType).exists();
+    }
 }
+
