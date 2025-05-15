@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import com.suraev.babyBankingSystem.entity.UserEntityEvent;
 import com.suraev.babyBankingSystem.entity.UserEntityEventType;
-
+import com.suraev.babyBankingSystem.aop.annotation.OperationLog;
 @Service
 @RequiredArgsConstructor
 public class PhoneServiceImpl implements PhoneService {
@@ -38,6 +38,7 @@ public class PhoneServiceImpl implements PhoneService {
 
     @Override
     @Transactional
+    @OperationLog(operation = "CREATE_PHONE")
     public PhoneDTO createPhone(Phone phone, Long userId) {
         User user = userServiceImpl.getUser(userId).get();
         String phoneNumber = phone.getNumber();
@@ -54,6 +55,7 @@ public class PhoneServiceImpl implements PhoneService {
 
     @Override
     @Transactional
+    @OperationLog(operation = "UPDATE_PHONE")
     public PhoneDTO updatePhone(Long phoneId, PhoneDTO phoneDTO) {
         
         String phoneNumber = phoneDTO.number();
@@ -82,6 +84,7 @@ public class PhoneServiceImpl implements PhoneService {
 
     @Override
     @Transactional
+    @OperationLog(operation = "DELETE_PHONE")
     public void deletePhone(Long id, Long userId) { 
         Phone existingPhone = phoneRepository.findById(id)  
         .orElseThrow(() -> new PhoneNumbeNotFoundException("Phone not found"));

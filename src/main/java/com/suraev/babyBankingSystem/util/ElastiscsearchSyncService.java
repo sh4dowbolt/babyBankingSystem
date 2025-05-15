@@ -14,6 +14,7 @@ import com.suraev.babyBankingSystem.entity.Phone;
 import com.suraev.babyBankingSystem.entity.Email;
 import java.util.stream.Collectors;
 
+
 @Service    
 @RequiredArgsConstructor
 @Slf4j
@@ -21,6 +22,7 @@ public class ElastiscsearchSyncService {
 
     private final ElasticsearchOperations elasticsearchOperation;
     private final UserRepository userRepository;
+
 
     public void syncUser(Long userId) {
         try {
@@ -49,6 +51,9 @@ public class ElastiscsearchSyncService {
         return null;
     }
     }
+
+
+
     private PhoneElastic convertToPhoneElastic(Phone phone) {
         return PhoneElastic.builder()
         .id(phone.getId())
@@ -56,6 +61,7 @@ public class ElastiscsearchSyncService {
         .userId(phone.getUser().getId())
         .build();
     }
+
     private EmailElastic convertToEmailElastic(Email email) {
         return EmailElastic.builder()
         .id(email.getId())

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import com.suraev.babyBankingSystem.entity.UserEntityEvent;
 import com.suraev.babyBankingSystem.entity.UserEntityEventType;
+import com.suraev.babyBankingSystem.aop.annotation.OperationLog;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +42,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     @Transactional
+    @OperationLog(operation = "CREATE_EMAIL")
     public EmailDTO createEmail(Email email, Long userId) {
         User user = userServiceImpl.getUser(userId).get();
         String emailAddress = email.getEmail();
@@ -58,6 +60,7 @@ public class EmailServiceImpl implements EmailService {
   
     @Override
     @Transactional
+    @OperationLog(operation = "UPDATE_EMAIL")
     public EmailDTO updateEmail(Long emailId, EmailDTO emailDTO) {
         String emailAddress = emailDTO.email();
         Long userId = emailDTO.userId();
@@ -85,6 +88,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override   
     @Transactional
+    @OperationLog(operation = "DELETE_EMAIL")
     public void deleteEmail(Long id, Long userId) {
         Email existingEmail = emailRepository.findById(id)
         .orElseThrow(() -> new EmailNotFoundException("Email not found"));

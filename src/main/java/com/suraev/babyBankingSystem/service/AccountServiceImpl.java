@@ -17,6 +17,7 @@ import com.suraev.babyBankingSystem.dto.TransferResponse;
 import java.math.BigDecimal;
 import com.suraev.babyBankingSystem.exception.IncorrectValueException;
 import com.suraev.babyBankingSystem.exception.AccountSenderNotBeRecipientException;
+import com.suraev.babyBankingSystem.aop.annotation.FinancialLog;
 
 @Service
 @RequiredArgsConstructor
@@ -27,22 +28,20 @@ public class AccountServiceImpl implements AccountService{
 
     @Scheduled(fixedRate = 30000)
     @Transactional
+    @FinancialLog(operation = "INCREASE_BALANCE")
     public void increaseBalances() {
+    
         List<Account> accounts = accountRepository.findAll();
-        log.info("Increasing balances for {} accounts", accounts.size());
         accounts.forEach(account -> {
             if (account.increaseBalance()) {
                 accountRepository.save(account);
-                log.info("Increased balance for account {}", account.getId());
-            } else {
-                log.info("Max balance reached for account {}", account.getId());
-            }
+            } 
         });
-
     }   
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @FinancialLog(operation = "TRANSFER_MONEY")
     public TransferResponse transferMoney(TransferRequest transferDTO) {
 
         BigDecimal value = transferDTO.getValue();
