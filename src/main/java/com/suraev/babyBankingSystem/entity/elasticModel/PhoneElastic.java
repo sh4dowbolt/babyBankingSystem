@@ -14,6 +14,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @Setter
 @AllArgsConstructor
 @Document(indexName = "phones")
+@Builder
 public class PhoneElastic {
     @Id
     private Long id;

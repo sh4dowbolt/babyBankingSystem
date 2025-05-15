@@ -32,14 +32,15 @@ public class ElasticsearchInit {
 
         try {
         if (!isIndexExists(UserElastic.class)) {
+
             log.info("intializing elasticsearch index for users");
         
-        List<User> users = userRepository.findAll();
-        List<UserElastic> userElastic = users.stream()
-        .map(this::convertToUserElastic)
-        .collect(Collectors.toList());  
+            List<User> users = userRepository.findAll();
+            List<UserElastic> userElastic = users.stream()
+                .map(this::convertToUserElastic)
+                .collect(Collectors.toList());  
 
-        elasticsearchOperations.save(userElastic);
+             elasticsearchOperations.save(userElastic);
 
         log.info("succesfully initialized elasticsearch index for users");
         } else {
@@ -51,6 +52,7 @@ public class ElasticsearchInit {
     }
 
     private UserElastic convertToUserElastic(User user) {
+        try {
        return UserElastic.builder()
        .id(user.getId())
        .name(user.getName())
@@ -58,6 +60,10 @@ public class ElasticsearchInit {
        .emails(user.getEmails().stream().map(email -> new EmailElastic(email.getId(), email.getEmail(), user.getId())).collect(Collectors.toList()))
        .dateOfBirth(user.getDateOfBirth())
        .build();
+    } catch (Exception e) {
+        log.error("error converting user to elasticsearch : {}", user.getId(), e.getMessage());
+        return null;
+    }
     }
 
     private boolean isIndexExists(Class<?> indexType) {
