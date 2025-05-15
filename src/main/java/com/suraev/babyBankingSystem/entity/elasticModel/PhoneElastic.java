@@ -6,12 +6,14 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Getter;   
 import lombok.Setter;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@Document(indexName = "phones")
 public class PhoneElastic {
     @Id
     private Long id;

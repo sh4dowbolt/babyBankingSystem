@@ -3,6 +3,7 @@ package com.suraev.babyBankingSystem.entity;
 import java.util.Date;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,10 +34,10 @@ public class User {
     @Column(name = "password")
     @Size(min = 8, max=500, message = "Password must be at least 8 characters long")
     private String password;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @NotEmpty(message = "At least one phone number is required")
     private List<Phone> phones;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @NotEmpty(message = "At least one email is required")
     private List<Email> emails;
     

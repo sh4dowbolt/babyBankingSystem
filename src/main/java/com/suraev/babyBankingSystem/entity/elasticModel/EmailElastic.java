@@ -1,6 +1,7 @@
 package com.suraev.babyBankingSystem.entity.elasticModel;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
@@ -11,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@Document(indexName = "emails")
 public class EmailElastic {
     @Id
     private Long id;

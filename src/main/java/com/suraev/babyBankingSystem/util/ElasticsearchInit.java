@@ -13,7 +13,7 @@ import com.suraev.babyBankingSystem.entity.elasticModel.UserElastic;
 import com.suraev.babyBankingSystem.repository.UserRepository;
 
 import jakarta.annotation.PostConstruct;
-
+import jakarta.transaction.Transactional;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import com.suraev.babyBankingSystem.entity.elasticModel.PhoneElastic;
 import com.suraev.babyBankingSystem.entity.elasticModel.EmailElastic;

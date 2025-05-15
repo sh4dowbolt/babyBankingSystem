@@ -1,0 +1,66 @@
+
+services:
+  baby-banking-system:
+    build: .
+    container_name: baby-banking-system
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres_db 
+      - elasticsearch
+    links:
+      - postgres_db
+      - elasticsearch
+    networks:
+      - baby-banking-system-network
+
+
+  postgres_db:
+        image: postgres:latest
+        container_name: postgres_db
+        ports:
+            - 5434:5432
+        healthcheck:
+          test: ["CMD", "pg_isready", "-U", "postgres", "-d", "babyBankingSystem"]
+          interval: 10s
+          timeout: 5s
+          retries: 5
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=babyBankingSystem
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - baby-banking-system-network
+
+  elasticsearch:
+        image: elasticsearch:8.1.0
+        container_name: elasticsearch
+        ports:
+          - 9200:9200 
+          - 9300:9300
+        healthcheck:
+          test: ["CMD", "curl", "-f", "http://localhost:9200"]
+          interval: 10s
+          timeout: 5s
+          retries: 5
+        environment:
+          - ES_JAVA_OPTS=-Xms512m -Xmx512m
+          - discovery.type=single-node
+          - xpack.security.enabled=false
+          - cluster.name=docker-cluster
+          - http.cors.enabled=true
+          - http.cors.allow-origin=*
+
+        networks:
+        - baby-banking-system-network
+
+
+volumes:
+  postgres_data:
+  elasticsearch_data:
+networks:
+  baby-banking-system-network:
+    driver: bridge
+
