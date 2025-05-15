@@ -24,8 +24,9 @@ public class AccountController {
     public ResponseEntity<TransferResponse> transferMoney(@RequestBody TransferRequest transferRequest,
      HttpServletRequest request) {
 
+        //TODO: replace with security context
         Long userId = (Long) request.getAttribute("userId");
-        
+
         if (userId == null) {
             throw new RuntimeException("User ID is null");
         }

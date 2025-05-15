@@ -5,7 +5,7 @@ import com.suraev.babyBankingSystem.dto.TransferResponse;
 
 public interface AccountService {
     
-    public void increaseBalances();
-    public TransferResponse transferMoney(TransferRequest transferDTO);
+    void increaseBalances();
+    TransferResponse transferMoney(TransferRequest transferDTO);
     
 }

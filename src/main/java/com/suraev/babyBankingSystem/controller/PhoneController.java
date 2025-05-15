@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.suraev.babyBankingSystem.entity.Phone;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.http.ResponseEntity;
 import com.suraev.babyBankingSystem.service.PhoneService;
@@ -16,7 +15,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import com.suraev.babyBankingSystem.exception.UserNotFoundException;
-import com.suraev.babyBankingSystem.dto.PhoneDTO;
+import com.suraev.babyBankingSystem.dto.PhoneDTO;   
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+
 @RestController
 @RequestMapping("/phone")
 @RequiredArgsConstructor
@@ -37,6 +39,7 @@ public class PhoneController {
     }
 
     @PutMapping("/{phoneId}")
+    @CacheEvict(value = "phones", key = "#phoneId")
     public ResponseEntity<PhoneDTO> updatePhone(@PathVariable Long phoneId, @RequestBody Phone phone, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         if(userId == null){
@@ -50,6 +53,7 @@ public class PhoneController {
     }
 
     @DeleteMapping("/{phoneId}")
+    @CacheEvict(value = "phones", key = "#phoneId")
     public ResponseEntity<Void> deletePhone(@PathVariable Long phoneId, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         if(userId == null){

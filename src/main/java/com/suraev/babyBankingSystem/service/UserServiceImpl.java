@@ -2,7 +2,9 @@ package com.suraev.babyBankingSystem.service;
 
 import org.springframework.stereotype.Service;
 import com.suraev.babyBankingSystem.entity.User;
+import com.suraev.babyBankingSystem.entity.elasticModel.UserElastic;
 import com.suraev.babyBankingSystem.repository.UserRepository;
+import com.suraev.babyBankingSystem.util.UserElasticSpecification;
 import com.suraev.babyBankingSystem.util.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import java.util.Optional;
@@ -14,8 +16,12 @@ import com.suraev.babyBankingSystem.dto.UserDTO;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Transactional;
-
-
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.support.PageableExecutionUtils;
+import java.util.List;
+import org.springframework.data.domain.PageImpl;
 
 
 
@@ -24,28 +30,48 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final ElasticsearchOperations elasticsearchOperations;
 
     @Override
+    @Cacheable(value = "users", key = "#id")
     public Optional<User> getUser(Long id) {    
         return userRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<UserDTO> searchForUsers(String name, String phoneNumber, String email, LocalDate dateOfBirth, Pageable pageable) {
-        Page<User> users = userRepository
-        .findAll(UserSpecification.hasName(name)
-        .and(UserSpecification.hasPhoneNumber(phoneNumber))
-        .and(UserSpecification.hasEmail(email))
-        .and(UserSpecification.hasDateOfBirth(dateOfBirth)), pageable);
+    public Page<UserDTO> searchForUsers(
+        String name, 
+        String phoneNumber,
+        String email,
+        LocalDate dateOfBirth,
+        Pageable pageable
+    ) {
 
-        Page<UserDTO> userDTOs = users.map(user -> new UserDTO(
-         user.getId(),
-         user.getName(),
-         user.getDateOfBirth(), 
-         user.getPhones().stream().map(x-> new PhoneDTO(x.getId(), x.getNumber(), x.getUser().getId())).collect(Collectors.toList()), 
-         user.getEmails().stream().map(x-> new EmailDTO(x.getId(), x.getEmail(), x.getUser().getId())).collect(Collectors.toList())
-        ));
-        return userDTOs;
+        NativeQuery query = UserElasticSpecification.buildUserQuery(name, phoneNumber, email, dateOfBirth, pageable);
+
+        List<UserElastic> users = elasticsearchOperations.search(query,UserElastic.class)
+        .map(result -> result.getContent())
+        .stream()
+        .collect(Collectors.toList());
+        
+        List<UserDTO> userDTOs = users.stream()
+        .map(this::userToUserDtos)
+        .collect(Collectors.toList());
+        
+
+        return new PageImpl<>(userDTOs, pageable, elasticsearchOperations.count(query, UserElastic.class));
     }
+
+    private UserDTO userToUserDtos(UserElastic userElastic) {
+        return new UserDTO(
+            userElastic.getId(),
+            userElastic.getName(),
+            userElastic.getDateOfBirth(),
+            userElastic.getPhones().stream().map(phoneElastic -> new PhoneDTO(phoneElastic.getId(), phoneElastic.getPhone(), phoneElastic.getUserId())).collect(Collectors.toList()),
+            userElastic.getEmails().stream().map(emailElastic -> new EmailDTO(emailElastic.getId(), emailElastic.getEmail(), emailElastic.getUserId())).collect(Collectors.toList())
+        );
+    }
+    
+    
 }

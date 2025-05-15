@@ -13,7 +13,8 @@ import com.suraev.babyBankingSystem.entity.Email;
 import com.suraev.babyBankingSystem.service.EmailService;
 import com.suraev.babyBankingSystem.exception.UserNotFoundException;
 import com.suraev.babyBankingSystem.dto.EmailDTO;
-
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.CacheEvict;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -35,6 +36,7 @@ public class EmailController {
     }
 
     @PutMapping("/{id}")
+    @CacheEvict(value = "emails", key = "#id")
     public ResponseEntity<EmailDTO> updateEmail(@PathVariable Long id, @RequestBody EmailDTO emailDTO, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         if(userId == null){
@@ -48,6 +50,7 @@ public class EmailController {
     }
     
     @DeleteMapping("/{id}")
+    @CacheEvict(value = "emails", key = "#id")
     public ResponseEntity<Void> deleteEmail(@PathVariable Long id, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         if(userId == null){

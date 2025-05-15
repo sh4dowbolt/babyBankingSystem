@@ -16,6 +16,7 @@ import com.suraev.babyBankingSystem.exception.NotEnoughMoneyToTransferException;
 import com.suraev.babyBankingSystem.dto.TransferResponse;
 import java.math.BigDecimal;
 import com.suraev.babyBankingSystem.exception.IncorrectValueException;
+import com.suraev.babyBankingSystem.exception.AccountSenderNotBeRecipientException;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +54,6 @@ public class AccountServiceImpl implements AccountService{
         }
 
 
-       
         Account sourceAccount = accountRepository.findByUserId(sourceUserId)
         .orElseThrow(() -> new AccountNotFoundException("Source account not found"));
         Account targetAccount = accountRepository.findByUserId(targetUserId)
@@ -65,7 +65,7 @@ public class AccountServiceImpl implements AccountService{
         }
 
         if(isTheSameAccount(sourceAccount, targetAccount)) {
-            throw new IncorrectValueException("Source and target accounts are the same");
+            throw new AccountSenderNotBeRecipientException("Source and target accounts are the same");
         }
 
         BigDecimal newBalance = sourceAccount.getBalance().subtract(value);
