@@ -15,6 +15,9 @@ import com.suraev.babyBankingSystem.exception.EmailNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import com.suraev.babyBankingSystem.dto.EmailDTO;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
+import com.suraev.babyBankingSystem.entity.UserEntityEvent;
+import com.suraev.babyBankingSystem.entity.UserEntityEventType;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class EmailServiceImpl implements EmailService {
 
     private final EmailRepository emailRepository;
     private final UserService userServiceImpl;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional(readOnly = true)
@@ -46,10 +50,12 @@ public class EmailServiceImpl implements EmailService {
         }
         email.setUser(user);
         Email savedEmail = emailRepository.save(email);
+
+        publishEvent(savedEmail, UserEntityEventType.CREATE);
         //TODO: add logging for create email + add mapping for emailDTO
         return new EmailDTO(savedEmail.getId(), savedEmail.getEmail(), savedEmail.getUser().getId());
     }
-
+  
     @Override
     @Transactional
     public EmailDTO updateEmail(Long emailId, EmailDTO emailDTO) {
@@ -72,6 +78,7 @@ public class EmailServiceImpl implements EmailService {
       
         existingEmail.setEmail(emailAddress);
         Email updatedEmail = emailRepository.save(existingEmail);
+        publishEvent(updatedEmail, UserEntityEventType.UPDATE);
         
         return new EmailDTO(updatedEmail.getId(),updatedEmail.getEmail(), updatedEmail.getUser().getId());
     }
@@ -89,5 +96,11 @@ public class EmailServiceImpl implements EmailService {
         }
 
         emailRepository.deleteById(id);
+        publishEvent(existingEmail, UserEntityEventType.DELETE);
+    }
+
+    private void publishEvent(Email email, UserEntityEventType eventType){
+        Long userId = email.getUser().getId();
+        eventPublisher.publishEvent(new UserEntityEvent(userId, eventType));
     }
 }   

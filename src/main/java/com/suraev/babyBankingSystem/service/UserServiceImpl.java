@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) 
     public Page<UserDTO> searchForUsers(
         String name, 
         String phoneNumber,
