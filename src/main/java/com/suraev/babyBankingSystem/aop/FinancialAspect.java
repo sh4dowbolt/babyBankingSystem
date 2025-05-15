@@ -20,7 +20,7 @@ public class FinancialAspect {
         String methodName = joinPoint.getSignature().getName();
         Object[] args = joinPoint.getArgs();
 
-        if(args[0] instanceof TransferRequest request){
+        if(args.length > 0 && args[0] instanceof TransferRequest request){
            log.info("Starting financial operation: {} from user {} to user {} with amount: {}", 
            financialLog.operation(), 
            request.getSourceUserId(), 

@@ -18,22 +18,29 @@ import java.math.BigDecimal;
 import com.suraev.babyBankingSystem.exception.IncorrectValueException;
 import com.suraev.babyBankingSystem.exception.AccountSenderNotBeRecipientException;
 import com.suraev.babyBankingSystem.aop.annotation.FinancialLog;
+import org.springframework.beans.factory.annotation.Value;
+    
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AccountServiceImpl implements AccountService{
 
+    @Value("${account.percentToIncrease}")
+    BigDecimal percentToIncrease; 
+    @Value("${account.maxPercentToIncrease}")
+    BigDecimal maxPercentToIncrease; 
+
     private final AccountRepository accountRepository;
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 4000)
     @Transactional
     @FinancialLog(operation = "INCREASE_BALANCE")
     public void increaseBalances() {
     
         List<Account> accounts = accountRepository.findAll();
         accounts.forEach(account -> {
-            if (account.increaseBalance()) {
+            if (account.increaseBalance(percentToIncrease, maxPercentToIncrease)) {
                 accountRepository.save(account);
             } 
         });
