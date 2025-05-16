@@ -27,9 +27,9 @@ import org.springframework.beans.factory.annotation.Value;
 public class AccountServiceImpl implements AccountService{
 
     @Value("${account.percentToIncrease}")
-    BigDecimal percentToIncrease; 
+    private BigDecimal percentToIncrease; 
     @Value("${account.maxPercentToIncrease}")
-    BigDecimal maxPercentToIncrease; 
+    private BigDecimal maxPercentToIncrease; 
 
     private final AccountRepository accountRepository;
 
@@ -90,7 +90,11 @@ public class AccountServiceImpl implements AccountService{
     }
 
     public boolean isEnoughMoneyToTransfer(Account sourceAccount, BigDecimal value) {
-        return sourceAccount.getBalance().compareTo(value) >= 0;
+        return sourceAccount.getBalance().compareTo(value) >= 0 && isValueNotEqualZero(value);
+    }
+
+    public boolean isValueNotEqualZero(BigDecimal value) {
+        return value.compareTo(BigDecimal.ZERO) != 0;
     }
     
     public boolean isTheSameAccount(Account sourceAccount, Account targetAccount) {

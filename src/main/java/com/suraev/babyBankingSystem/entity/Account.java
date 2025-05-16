@@ -18,11 +18,15 @@ import java.util.List;
 import com.suraev.babyBankingSystem.entity.User;    
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
 
 @Entity
 @Table(name = "account")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 public class Account {   
 
     public Account(BigDecimal balance) {
