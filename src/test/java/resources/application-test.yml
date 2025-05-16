@@ -10,3 +10,6 @@ spring:
     uris: ${elasticsearch.uris}
     username: elastic
     password: elastic
+server:
+  servlet:
+    context-path: /api/v1

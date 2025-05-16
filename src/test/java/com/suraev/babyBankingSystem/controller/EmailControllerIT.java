@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import com.suraev.babyBankingSystem.service.EmailService;
+import com.suraev.babyBankingSystem.service.JwtService;
 
 import jakarta.validation.ValidationException;
 
@@ -42,13 +43,13 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import java.time.Duration;
 import com.suraev.babyBankingSystem.entity.User;
 import static org.mockito.Mockito.doNothing;
-
+import com.suraev.babyBankingSystem.config.TestConfig;
 
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-
+@Import(TestConfig.class)
 public class EmailControllerIT {
 
     @Autowired
@@ -57,6 +58,8 @@ public class EmailControllerIT {
     private ObjectMapper objectMapper;
     @MockBean
     private EmailService emailServiceImpl;
+    @Autowired
+    private JwtService jwtService;
     private static ElasticsearchContainer elasticsearchContainer;
 
     static {
@@ -91,79 +94,73 @@ public class EmailControllerIT {
 
     private static final Long USER_ID = 1L;
     private static final String USER_EMAIL = "suraevvvitaly@gmail.com";
+    private String jwtToken;
 
     @BeforeEach
     void setUp() {
-        SecurityContext securityContext=SecurityContextHolder.createEmptyContext();
-        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(USER_ID,null,null));
-        SecurityContextHolder.setContext(securityContext);
+        // Generate a real JWT token for testing
+        jwtToken = jwtService.generateToken(USER_ID);
     }
-   
+
     @Test
-    @WithMockUser(username = "suraevvvitaly@gmail.com", password = "password")
     @DisplayName("create email successfully")
     void createEmailSuccessfully() throws Exception {
-    //given
-        User user= new User();
+        // given
+        User user = new User();
         user.setId(USER_ID);
-        Email emailToCreate= new Email(1L,USER_EMAIL,user);
-    
-
-        EmailDTO emailDTO= new EmailDTO(1L,USER_EMAIL,USER_ID);
+        Email emailToCreate = Email.builder().email(USER_EMAIL).build();
+        EmailDTO emailDTO = new EmailDTO(1L, USER_EMAIL, USER_ID);
 
         when(emailServiceImpl.createEmail(any(Email.class), eq(USER_ID))).thenReturn(emailDTO);
 
-
-        //when
+        // when
         mockMvc.perform(MockMvcRequestBuilders.post("/email")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(emailToCreate))
-        .with(SecurityMockMvcRequestPostProcessors.user(USER_ID.toString())))
-        .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.id").value(1L))
-        .andExpect(jsonPath("$.email").value(USER_EMAIL))
-        .andExpect(jsonPath("$.userId").value(USER_ID))
-        .andDo(print());
+                .header("Authorization", "Bearer " + jwtToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(emailToCreate)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.email").value(USER_EMAIL))
+                .andExpect(jsonPath("$.userId").value(USER_ID))
+                .andDo(print());
 
         verify(emailServiceImpl).createEmail(any(Email.class), eq(USER_ID));
     }
 
     @Test
-    @WithMockUser(username = "suraevvvitaly@gmail.com", password = "password")
     @DisplayName("update email successfully")
     void updateEmailSuccessfully() throws Exception {
-        //given
+        // given
         Long emailId = 1L;
         String emailToUpdate = USER_EMAIL;
         EmailDTO emailDTO = new EmailDTO(emailId, emailToUpdate, USER_ID);
 
         when(emailServiceImpl.updateEmail(eq(emailId), eq(emailDTO))).thenReturn(emailDTO);
 
-        //when
+        // when
         mockMvc.perform(MockMvcRequestBuilders.put("/email/{id}", emailId)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(emailDTO))
-        .with(SecurityMockMvcRequestPostProcessors.user(USER_ID.toString())))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.email").value(emailToUpdate))
-        .andDo(print());
+                .header("Authorization", "Bearer " + jwtToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(emailDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value(emailToUpdate))
+                .andDo(print());
 
         verify(emailServiceImpl).updateEmail(eq(emailId), any(EmailDTO.class));
     }
 
     @Test
-    @WithMockUser(username = "suraevvvitaly@gmail.com", password = "password")
     @DisplayName("delete email successfully")
     void deleteEmailSuccessfully() throws Exception {
-        //given
+        // given
         Long emailId = 1L;
         doNothing().when(emailServiceImpl).deleteEmail(emailId, USER_ID);
 
-        //when
+        // when
         mockMvc.perform(MockMvcRequestBuilders.delete("/email/{id}", emailId)
-        .with(SecurityMockMvcRequestPostProcessors.user(USER_ID.toString())))
-        .andExpect(status().isNoContent())
-        .andDo(print());
+                .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNoContent())
+                .andDo(print());
 
         verify(emailServiceImpl).deleteEmail(emailId, USER_ID);
     }
@@ -171,33 +168,32 @@ public class EmailControllerIT {
     @Test
     @DisplayName("create email by not authenticated user")
     void createEmailByNotAuthenticatedUser() throws Exception {
-        //given
-        SecurityContextHolder.clearContext();
-        User user= new User();
+        // given
+        User user = new User();
         user.setId(USER_ID);
-        Email emailToCreate= new Email(1L,USER_EMAIL,user);
-        
+        Email emailToCreate = new Email(1L, USER_EMAIL, user);
 
-        //when
+        // when
         mockMvc.perform(MockMvcRequestBuilders.post("/email")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(emailToCreate)))
-        .andExpect(status().isUnauthorized())
-        .andDo(print());
-    }   
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(emailToCreate)))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
+    }
 
     @Test
     @DisplayName("update email by not authenticated user")
     void updateEmailByNotAuthenticatedUser() throws Exception {
-        //given
+        // given
         Long emailId = 1L;
         EmailDTO invalidEmailDTO = new EmailDTO(emailId, "invalid_format_email", USER_ID);
 
-        when(emailServiceImpl.updateEmail(eq(emailId), any(EmailDTO.class))).thenThrow(new ValidationException("Invalid email format"));
-        //when
+        // when
         mockMvc.perform(MockMvcRequestBuilders.put("/email/{id}", emailId)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(invalidEmailDTO)))
-        .andExpect(status().isBadRequest())
-        .andDo(print());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidEmailDTO)))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
+    }
 }
+

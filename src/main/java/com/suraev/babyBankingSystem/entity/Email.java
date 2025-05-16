@@ -15,13 +15,14 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import lombok.Builder;
 @Entity
 @Table(name = "email")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Email implements Serializable{
 
     private static final long serialVersionUID = 2L;

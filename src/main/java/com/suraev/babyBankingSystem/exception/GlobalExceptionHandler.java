@@ -10,6 +10,8 @@ import java.util.HashMap;
 import jakarta.validation.ConstraintViolationException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.ExpiredJwtException;
+import org.springframework.security.access.AccessDeniedException;
+import com.suraev.babyBankingSystem.exception.JwtAuthenticationException;
 
 @RestControllerAdvice   
 public class GlobalExceptionHandler {
@@ -24,7 +26,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
     @ExceptionHandler(PhoneNumberAlreadyExistsException.class)
     public ResponseEntity<String> handlePhoneNumberAlreadyExistsException(PhoneNumberAlreadyExistsException ex) {
@@ -62,5 +64,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleAccountSenderNotBeRecipientException(AccountSenderNotBeRecipientException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+    
 }
 

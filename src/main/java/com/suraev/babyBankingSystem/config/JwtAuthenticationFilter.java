@@ -15,58 +15,41 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 import com.suraev.babyBankingSystem.exception.JwtAuthenticationException;
+import java.util.Collections;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
-    private final JwtService jwtService;
+    private final JwtService jwtService;    
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-          
-        log.debug("Processing request to URL: {}", request.getRequestURI());
-        
-        if (shouldSkipFilter(request)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String authHeader = request.getHeader("Authorization");
-        log.debug("Authorization header: {}", authHeader);
-        
-        if(authHeader == null || !authHeader.startsWith("Bearer ")) {
-            log.warn("No Bearer token found in request to {}", request.getRequestURI());
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        try {
-            String token = authHeader.substring(7);
+        String token = getTokenFromRequest(request);
+        if(token != null && jwtService.extractUserId(token) != null){
             Long userId = jwtService.extractUserId(token);
-            
-            if (userId == null) {
-                throw new JwtAuthenticationException("Invalid user ID in token");
-            }
-
-            var authToken = new UsernamePasswordAuthenticationToken(userId, null, null);
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-            log.debug("Authentication set for user: {}", userId);
-            
-            filterChain.doFilter(request, response);
-        } catch (Exception e) {
-            log.error("JWT Authentication failed: {}", e.getMessage());
-            SecurityContextHolder.clearContext();
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                userId, 
+                null, 
+                null);
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
+        filterChain.doFilter(request, response);
     }
 
-    private boolean shouldSkipFilter(HttpServletRequest request) {
-        return request.getRequestURI().startsWith("/api/v1/auth/") ||
-               request.getRequestURI().equals("/api/v1/error");
+          
+    private String getTokenFromRequest(HttpServletRequest request){
+        String header = request.getHeader("Authorization");
+        if(header != null && header.startsWith("Bearer ")){
+            return header.substring(7);
+        }
+        return null;
     }
 }
+
 
 

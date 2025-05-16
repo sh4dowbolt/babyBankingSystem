@@ -78,7 +78,6 @@ public class PhoneServiceImpl implements PhoneService {
         existingPhone.setNumber(phoneNumber);
         Phone updatedPhone = phoneRepository.save(existingPhone);
         publishEvent(updatedPhone, UserEntityEventType.UPDATE);
-        //TODO: add logging for update phone number + add mapping for phoneDTO
         return new PhoneDTO(updatedPhone.getId(), updatedPhone.getNumber(), updatedPhone.getUser().getId());
     }   
 

@@ -18,6 +18,7 @@ import com.suraev.babyBankingSystem.exception.UserNotFoundException;
 import com.suraev.babyBankingSystem.dto.PhoneDTO;   
 import org.springframework.cache.annotation.CacheEvict;
 import com.suraev.babyBankingSystem.util.SecurityUtils;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/phone")
@@ -37,7 +38,7 @@ public class PhoneController {
 
     @PutMapping("/{phoneId}")
     @CacheEvict(value = "phones", key = "#phoneId")
-    public ResponseEntity<PhoneDTO> updatePhone(@PathVariable Long phoneId, @RequestBody Phone phone) {
+    public ResponseEntity<PhoneDTO> updatePhone(@PathVariable Long phoneId,  @Valid @RequestBody Phone phone) {
         
         Long userId = SecurityUtils.getCurrentUserId();
         String phoneNumberToUpdate = phone.getNumber();

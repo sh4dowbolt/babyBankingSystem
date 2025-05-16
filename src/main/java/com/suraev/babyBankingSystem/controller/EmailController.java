@@ -40,7 +40,7 @@ public class EmailController {
 
     @PutMapping("/{id}")
     @CacheEvict(value = "emails", key = "#id")
-    public ResponseEntity<EmailDTO> updateEmail(@PathVariable Long id, @RequestBody EmailDTO emailDTO) {
+    public ResponseEntity<EmailDTO> updateEmail(@PathVariable Long id, @RequestBody @Valid EmailDTO emailDTO) {
         
         Long userId = SecurityUtils.getCurrentUserId();
         String emailAddressToUpdate = emailDTO.email();
