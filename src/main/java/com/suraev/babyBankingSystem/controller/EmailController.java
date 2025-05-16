@@ -8,14 +8,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import jakarta.servlet.http.HttpServletRequest;
 import com.suraev.babyBankingSystem.entity.Email;   
 import com.suraev.babyBankingSystem.service.EmailService;
-import com.suraev.babyBankingSystem.exception.UserNotFoundException;
 import com.suraev.babyBankingSystem.dto.EmailDTO;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.CacheEvict;
 import lombok.RequiredArgsConstructor;
+import com.suraev.babyBankingSystem.util.SecurityUtils;
 
 @RestController
 @RequestMapping("/email")
@@ -25,11 +23,9 @@ public class EmailController {
     private final EmailService emailServiceImpl;
 
     @PostMapping
-    public ResponseEntity<EmailDTO> createEmail(@RequestBody Email email, HttpServletRequest request) {
-        Long userId = (Long) request.getAttribute("userId");
-        if(userId == null){
-            throw new UserNotFoundException("User not found");
-        }
+    public ResponseEntity<EmailDTO> createEmail(@RequestBody Email email) {
+        
+        Long userId = SecurityUtils.getCurrentUserId();
         EmailDTO createdEmail = emailServiceImpl.createEmail(email, userId);
 
         return ResponseEntity.ok(createdEmail);
@@ -37,11 +33,9 @@ public class EmailController {
 
     @PutMapping("/{id}")
     @CacheEvict(value = "emails", key = "#id")
-    public ResponseEntity<EmailDTO> updateEmail(@PathVariable Long id, @RequestBody EmailDTO emailDTO, HttpServletRequest request) {
-        Long userId = (Long) request.getAttribute("userId");
-        if(userId == null){
-            throw new UserNotFoundException("User not found");
-        }
+    public ResponseEntity<EmailDTO> updateEmail(@PathVariable Long id, @RequestBody EmailDTO emailDTO) {
+        
+        Long userId = SecurityUtils.getCurrentUserId();
         String emailAddressToUpdate = emailDTO.email();
         EmailDTO emailDTOToUpdate = new EmailDTO(id, emailAddressToUpdate, userId);
 
@@ -51,11 +45,10 @@ public class EmailController {
     
     @DeleteMapping("/{id}")
     @CacheEvict(value = "emails", key = "#id")
-    public ResponseEntity<Void> deleteEmail(@PathVariable Long id, HttpServletRequest request) {
-        Long userId = (Long) request.getAttribute("userId");
-        if(userId == null){
-            throw new UserNotFoundException("User not found");
-        }
+    public ResponseEntity<Void> deleteEmail(@PathVariable Long id) {
+        
+        Long userId = SecurityUtils.getCurrentUserId();
+
         emailServiceImpl.deleteEmail(id, userId);
         
         return ResponseEntity.noContent().build();

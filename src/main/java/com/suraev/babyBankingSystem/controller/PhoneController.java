@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import com.suraev.babyBankingSystem.exception.UserNotFoundException;
 import com.suraev.babyBankingSystem.dto.PhoneDTO;   
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
+import com.suraev.babyBankingSystem.util.SecurityUtils;
 
 @RestController
 @RequestMapping("/phone")
@@ -25,26 +25,21 @@ import org.springframework.cache.annotation.CachePut;
 public class PhoneController {
 
     private final PhoneService phoneServiceImpl;
-   
 
     @PostMapping
-    public ResponseEntity<PhoneDTO> addPhone(@RequestBody Phone phone, HttpServletRequest request) {
-        Long userId = (Long) request.getAttribute("userId");
-        if(userId == null){
-            throw new UserNotFoundException("User not found");
-        }
-        PhoneDTO newPhone = phoneServiceImpl.createPhone(phone, userId);
+    public ResponseEntity<PhoneDTO> addPhone(@RequestBody Phone phone) {
+
+        Long userId = SecurityUtils.getCurrentUserId();
+        PhoneDTO newPhone = phoneServiceImpl.createPhone(phone, userId);    
         return ResponseEntity.ok(newPhone);
 
     }
 
     @PutMapping("/{phoneId}")
     @CacheEvict(value = "phones", key = "#phoneId")
-    public ResponseEntity<PhoneDTO> updatePhone(@PathVariable Long phoneId, @RequestBody Phone phone, HttpServletRequest request) {
-        Long userId = (Long) request.getAttribute("userId");
-        if(userId == null){
-            throw new UserNotFoundException("User not found");
-        }
+    public ResponseEntity<PhoneDTO> updatePhone(@PathVariable Long phoneId, @RequestBody Phone phone) {
+        
+        Long userId = SecurityUtils.getCurrentUserId();
         String phoneNumberToUpdate = phone.getNumber();
         PhoneDTO phoneDTO = new PhoneDTO(phoneId, phoneNumberToUpdate, userId);
 
@@ -54,11 +49,10 @@ public class PhoneController {
 
     @DeleteMapping("/{phoneId}")
     @CacheEvict(value = "phones", key = "#phoneId")
-    public ResponseEntity<Void> deletePhone(@PathVariable Long phoneId, HttpServletRequest request) {
-        Long userId = (Long) request.getAttribute("userId");
-        if(userId == null){
-            throw new UserNotFoundException("User not found");
-        }
+    public ResponseEntity<Void> deletePhone(@PathVariable Long phoneId) {
+        
+        Long userId = SecurityUtils.getCurrentUserId();
+
         phoneServiceImpl.deletePhone(phoneId, userId);
         
         return ResponseEntity.noContent().build();

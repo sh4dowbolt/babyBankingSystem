@@ -12,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 import com.suraev.babyBankingSystem.dto.TransferRequest;
 import com.suraev.babyBankingSystem.service.AccountService;
 import com.suraev.babyBankingSystem.dto.TransferResponse;
-import jakarta.servlet.http.HttpServletRequest;
+import com.suraev.babyBankingSystem.util.SecurityUtils;
+
 @RestController
 @RequestMapping("/accounts")
 @RequiredArgsConstructor
@@ -21,18 +22,12 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping
-    public ResponseEntity<TransferResponse> transferMoney(@RequestBody TransferRequest transferRequest,
-     HttpServletRequest request) {
+    public ResponseEntity<TransferResponse> transferMoney(@RequestBody TransferRequest transferRequest) {
 
-        //TODO: replace with security context
-        Long userId = (Long) request.getAttribute("userId");
-
-        if (userId == null) {
-            throw new RuntimeException("User ID is null");
-        }
+        Long userId = SecurityUtils.getCurrentUserId();
         transferRequest.setSourceUserId(userId);
-
         TransferResponse response = accountService.transferMoney(transferRequest);
+
         return ResponseEntity.ok(response);
     }
 }
