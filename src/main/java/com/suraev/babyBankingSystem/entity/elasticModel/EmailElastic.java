@@ -9,17 +9,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 @Getter
 @Setter
 @AllArgsConstructor
 @Document(indexName = "emails")
 @Builder
+@Schema(description = "Email Elastic")
 public class EmailElastic {
     @Id
+    @Schema(description = "ID", example = "1")
     private Long id;
     @Field(type = FieldType.Keyword)
+    @Schema(description = "Email", example = "test@test.com")
     private String email;
     @Field(type = FieldType.Keyword)
+    @Schema(description = "User ID", example = "1")
     private Long userId;
 }

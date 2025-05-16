@@ -12,17 +12,36 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.data.domain.PageRequest;
 import com.suraev.babyBankingSystem.dto.UserDTO;
 import java.time.LocalDate;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-
+import io.swagger.v3.oas.annotations.Parameter;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Tag(name = "User management", description = "Operations with users")
 public class UserController {
 
     private final UserService userServiceImpl;
 
     @GetMapping
+    @Operation(summary = "Search for users", description = "Search for users by name, phone number, email, or date of birth")
+    @ApiResponse(responseCode = "200", description = "Users found successfully", content = @Content(schema = @Schema(implementation = UserDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Invalid request parameters")
+    @ApiResponse(responseCode = "401", description = "Unauthorized access")
+    @ApiResponse(responseCode = "404", description = "User not found")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    @SecurityRequirement(name = "JWT")
+    @Parameter(name = "name", description = "Name of the user")
+    @Parameter(name = "phoneNumber", description = "Phone number of the user")
+    @Parameter(name = "email", description = "Email of the user")
+    @Parameter(name = "dateOfBirth", description = "Date of birth of the user")
+    @Parameter(name = "page", description = "Page number")
+    @Parameter(name = "size", description = "Number of users per page")
     public Page<UserDTO> searchForUsers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String phoneNumber,
