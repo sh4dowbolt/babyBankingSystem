@@ -8,6 +8,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import com.suraev.babyBankingSystem.service.JwtService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 @Configuration
 @EnableWebSecurity
@@ -15,6 +16,7 @@ import com.suraev.babyBankingSystem.service.JwtService;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,JwtService jwtService) throws Exception{
         http
@@ -23,8 +25,10 @@ public class SecurityConfig {
         .requestMatchers("/auth/**").permitAll()
         .anyRequest().authenticated()
         )
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-        .exceptionHandling(exception -> exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
+        .exceptionHandling(exception -> exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+    );
         return http.build();
     }
 }

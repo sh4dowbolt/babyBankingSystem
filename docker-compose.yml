@@ -55,6 +55,13 @@ services:
 
         networks:
         - baby-banking-system-network
+  redis:
+      image: redis:latest
+      container_name: redis
+      ports:
+        - 6379:6379
+      networks:
+        - baby-banking-system-network
 
 
 volumes:

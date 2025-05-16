@@ -14,7 +14,8 @@ import com.suraev.babyBankingSystem.dto.EmailDTO;
 import org.springframework.cache.annotation.CacheEvict;
 import lombok.RequiredArgsConstructor;
 import com.suraev.babyBankingSystem.util.SecurityUtils;
-
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
 @RestController
 @RequestMapping("/email")
 @RequiredArgsConstructor
@@ -22,8 +23,14 @@ public class EmailController {
 
     private final EmailService emailServiceImpl;
 
+    @GetMapping
+    public ResponseEntity<String> test() {
+    Long userId = SecurityUtils.getCurrentUserId();
+    return ResponseEntity.ok("User ID: " + userId);
+}
+
     @PostMapping
-    public ResponseEntity<EmailDTO> createEmail(@RequestBody Email email) {
+    public ResponseEntity<EmailDTO> createEmail(@RequestBody  @Valid Email email) {
         
         Long userId = SecurityUtils.getCurrentUserId();
         EmailDTO createdEmail = emailServiceImpl.createEmail(email, userId);

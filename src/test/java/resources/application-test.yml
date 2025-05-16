@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:15-alpine:///test_db
+    username: test
+    password: test
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  elasticsearch:
+    uris: ${elasticsearch.uris}
+    username: elastic
+    password: elastic

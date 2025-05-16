@@ -11,13 +11,20 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import lombok.Getter;
 import lombok.Setter;
-
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "email")
 @Getter
 @Setter
-public class Email {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Email implements Serializable{
+
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,5 +33,6 @@ public class Email {
     private String email;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
 }

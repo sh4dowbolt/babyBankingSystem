@@ -44,6 +44,7 @@ public class EmailServiceImpl implements EmailService {
     @Transactional
     @OperationLog(operation = "CREATE_EMAIL")
     public EmailDTO createEmail(Email email, Long userId) {
+        
         User user = userServiceImpl.getUser(userId).get();
         String emailAddress = email.getEmail();
 
@@ -54,7 +55,7 @@ public class EmailServiceImpl implements EmailService {
         Email savedEmail = emailRepository.save(email);
 
         publishEvent(savedEmail, UserEntityEventType.CREATE);
-        //TODO: add logging for create email + add mapping for emailDTO
+       
         return new EmailDTO(savedEmail.getId(), savedEmail.getEmail(), savedEmail.getUser().getId());
     }
   

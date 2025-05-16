@@ -11,13 +11,16 @@ import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-
+import java.io.Serializable;    
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "phone")
 @Getter
 @Setter
-public class Phone {
+public class Phone implements Serializable{
+
+    private static final long serialVersionUID = 3L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,5 +29,6 @@ public class Phone {
     private String number;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
     private User user;
 }

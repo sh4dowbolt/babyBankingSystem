@@ -17,12 +17,19 @@ import java.util.List;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import java.io.Serializable;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "\"user\"")
-public class User { 
+@NoArgsConstructor
+@AllArgsConstructor
+public class User implements Serializable{ 
+
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

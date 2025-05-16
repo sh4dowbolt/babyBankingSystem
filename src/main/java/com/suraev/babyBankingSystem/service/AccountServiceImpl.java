@@ -33,7 +33,7 @@ public class AccountServiceImpl implements AccountService{
 
     private final AccountRepository accountRepository;
 
-    @Scheduled(fixedRate = 4000)
+    @Scheduled(fixedRate = 300000)
     @Transactional
     @FinancialLog(operation = "INCREASE_BALANCE")
     public void increaseBalances() {
