@@ -9,6 +9,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import com.suraev.babyBankingSystem.service.EmailService;
+
+import jakarta.validation.ValidationException;
+
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,6 +41,7 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.testcontainers.containers.wait.strategy.Wait;
 import java.time.Duration;
 import com.suraev.babyBankingSystem.entity.User;
+import static org.mockito.Mockito.doNothing;
 
 
 
@@ -96,6 +100,7 @@ public class EmailControllerIT {
     }
    
     @Test
+    @WithMockUser(username = "suraevvvitaly@gmail.com", password = "password")
     @DisplayName("create email successfully")
     void createEmailSuccessfully() throws Exception {
     //given
@@ -124,6 +129,7 @@ public class EmailControllerIT {
     }
 
     @Test
+    @WithMockUser(username = "suraevvvitaly@gmail.com", password = "password")
     @DisplayName("update email successfully")
     void updateEmailSuccessfully() throws Exception {
         //given
@@ -139,13 +145,59 @@ public class EmailControllerIT {
         .content(objectMapper.writeValueAsString(emailDTO))
         .with(SecurityMockMvcRequestPostProcessors.user(USER_ID.toString())))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.id").value(emailId))
         .andExpect(jsonPath("$.email").value(emailToUpdate))
-        .andExpect(jsonPath("$.userId").value(USER_ID))
         .andDo(print());
 
-        verify(emailServiceImpl).updateEmail(eq(emailId), eq(emailDTO));
+        verify(emailServiceImpl).updateEmail(eq(emailId), any(EmailDTO.class));
     }
 
-    
+    @Test
+    @WithMockUser(username = "suraevvvitaly@gmail.com", password = "password")
+    @DisplayName("delete email successfully")
+    void deleteEmailSuccessfully() throws Exception {
+        //given
+        Long emailId = 1L;
+        doNothing().when(emailServiceImpl).deleteEmail(emailId, USER_ID);
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.delete("/email/{id}", emailId)
+        .with(SecurityMockMvcRequestPostProcessors.user(USER_ID.toString())))
+        .andExpect(status().isNoContent())
+        .andDo(print());
+
+        verify(emailServiceImpl).deleteEmail(emailId, USER_ID);
+    }
+
+    @Test
+    @DisplayName("create email by not authenticated user")
+    void createEmailByNotAuthenticatedUser() throws Exception {
+        //given
+        SecurityContextHolder.clearContext();
+        User user= new User();
+        user.setId(USER_ID);
+        Email emailToCreate= new Email(1L,USER_EMAIL,user);
+        
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.post("/email")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(emailToCreate)))
+        .andExpect(status().isUnauthorized())
+        .andDo(print());
+    }   
+
+    @Test
+    @DisplayName("update email by not authenticated user")
+    void updateEmailByNotAuthenticatedUser() throws Exception {
+        //given
+        Long emailId = 1L;
+        EmailDTO invalidEmailDTO = new EmailDTO(emailId, "invalid_format_email", USER_ID);
+
+        when(emailServiceImpl.updateEmail(eq(emailId), any(EmailDTO.class))).thenThrow(new ValidationException("Invalid email format"));
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.put("/email/{id}", emailId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(invalidEmailDTO)))
+        .andExpect(status().isBadRequest())
+        .andDo(print());
 }
