@@ -1,30 +1,22 @@
 package com.suraev.babyBankingSystem.util;
 
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
-import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
-
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
-import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
-    
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import co.elastic.clients.json.JsonData;
-import java.util.Map;
-import java.util.HashMap;
-
-
 
 public class UserElasticSpecification {
 
     public static NativeQuery buildUserQuery(
-        String name,
-        String phoneNumber,
-        String email,
-        LocalDate dateOfBirth,
-        Pageable pageable
-    ) {
+                                                String name,
+                                                String phoneNumber,
+                                                String email,
+                                                LocalDate dateOfBirth,
+                                                Pageable pageable
+                                            ) {
+
         BoolQuery.Builder boolQueryBuilder = new BoolQuery.Builder();
 
         if(name != null && !name.isEmpty()) {
@@ -67,7 +59,6 @@ public class UserElasticSpecification {
         .withQuery(boolQueryBuilder.build()._toQuery())
         .withPageable(pageable)
         .build();
-
 
     }
 }

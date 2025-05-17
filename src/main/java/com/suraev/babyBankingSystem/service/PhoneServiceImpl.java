@@ -11,7 +11,6 @@ import com.suraev.babyBankingSystem.repository.PhoneRepository;
 import com.suraev.babyBankingSystem.exception.PhoneNumberAlreadyExistsException;
 import org.springframework.security.access.AccessDeniedException;
 import com.suraev.babyBankingSystem.entity.User;
-import com.suraev.babyBankingSystem.service.UserService;  
 import com.suraev.babyBankingSystem.dto.PhoneDTO;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
@@ -49,7 +48,7 @@ public class PhoneServiceImpl implements PhoneService {
         phone.setUser(user);
         Phone savedPhone = phoneRepository.save(phone);
         publishEvent(savedPhone, UserEntityEventType.CREATE);
-        //TODO: add logging for create phone number + add mapping for phoneDTO
+        
         return new PhoneDTO(savedPhone.getId(), savedPhone.getNumber(), savedPhone.getUser().getId());
     }
 

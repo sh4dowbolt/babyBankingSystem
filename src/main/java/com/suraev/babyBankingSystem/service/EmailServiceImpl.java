@@ -2,13 +2,10 @@ package com.suraev.babyBankingSystem.service;
 
 import java.util.List;
 import java.util.Optional;
-
 import com.suraev.babyBankingSystem.entity.Email;
 import com.suraev.babyBankingSystem.repository.EmailRepository;
-
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
-import com.suraev.babyBankingSystem.service.UserService;
 import com.suraev.babyBankingSystem.entity.User;
 import com.suraev.babyBankingSystem.exception.EmailAlreadyExistsException;
 import com.suraev.babyBankingSystem.exception.EmailNotFoundException;
@@ -78,7 +75,6 @@ public class EmailServiceImpl implements EmailService {
         if(!existingEmailUserId.equals(userId)){
             throw new AccessDeniedException("You are not allowed to update this email");
         }
-        //TODO: add logging for update email + add mapping for emailDTO
       
         existingEmail.setEmail(emailAddress);
         Email updatedEmail = emailRepository.save(existingEmail);

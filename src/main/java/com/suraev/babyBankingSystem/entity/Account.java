@@ -9,24 +9,20 @@ import jakarta.persistence.Column;
 import java.math.BigDecimal;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.JoinColumn;
-import jakarta.validation.constraints.DecimalMin;       
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.persistence.OneToMany;
-import java.util.List;
-import com.suraev.babyBankingSystem.entity.User;    
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 import io.swagger.v3.oas.annotations.media.Schema;
+
+
 @Entity
-@Table(name = "account")
+
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
+@Table(name = "account")
 @Schema(description = "Account")
 public class Account {   
 
@@ -44,11 +40,9 @@ public class Account {
 
     @Column(name = "initial_balance")
     @Schema(description = "Initial balance", example = "100.00")
-   // @DecimalMin(value = "0.00", message = "Balance must be greater than 0")
     private BigDecimal initialBalance;
     @Column(name = "balance")
     @Schema(description = "Balance", example = "100.00")
-    //@DecimalMin(value = "0.00", message = "Balance must be greater than 0")
     private BigDecimal balance;
 
     @OneToOne

@@ -63,7 +63,6 @@ services:
       networks:
         - baby-banking-system-network
 
-
 volumes:
   postgres_data:
   elasticsearch_data:

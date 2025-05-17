@@ -1,7 +1,6 @@
 package com.suraev.babyBankingSystem.controller;
 
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,16 +9,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import com.suraev.babyBankingSystem.service.EmailService;
 import com.suraev.babyBankingSystem.service.JwtService;
-
-import jakarta.validation.ValidationException;
-
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import static org.mockito.ArgumentMatchers.eq;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.core.context.SecurityContext;
 import org.junit.jupiter.api.DisplayName;
 import com.suraev.babyBankingSystem.entity.Email;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,16 +27,13 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Bean;
 import org.testcontainers.utility.DockerImageName;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.testcontainers.containers.wait.strategy.Wait;
 import java.time.Duration;
 import com.suraev.babyBankingSystem.entity.User;
 import static org.mockito.Mockito.doNothing;
 import com.suraev.babyBankingSystem.config.TestConfig;
-
+import org.junit.jupiter.api.AfterAll;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -90,6 +79,13 @@ public class EmailControllerIT {
     static void elasticsearchProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.elasticsearch.uris", 
             () -> "http://localhost:" + elasticsearchContainer.getMappedPort(9200));
+    }
+
+    @AfterAll
+    static void stopElasticsearchContainer() {
+        if (elasticsearchContainer != null) {
+            elasticsearchContainer.close();
+        }
     }
 
     private static final Long USER_ID = 1L;

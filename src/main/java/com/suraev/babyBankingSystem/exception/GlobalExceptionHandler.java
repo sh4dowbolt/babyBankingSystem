@@ -3,15 +3,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import com.suraev.babyBankingSystem.exception.EmailAlreadyExistsException;
-import com.suraev.babyBankingSystem.exception.PhoneNumberAlreadyExistsException;    
 import java.util.Map;
 import java.util.HashMap;
 import jakarta.validation.ConstraintViolationException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.ExpiredJwtException;
-import org.springframework.security.access.AccessDeniedException;
-import com.suraev.babyBankingSystem.exception.JwtAuthenticationException;
+
 
 @RestControllerAdvice   
 public class GlobalExceptionHandler {

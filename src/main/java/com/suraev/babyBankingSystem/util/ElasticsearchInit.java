@@ -1,23 +1,19 @@
 package com.suraev.babyBankingSystem.util;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.RequestScope;
-
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.UtilityClass;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import com.suraev.babyBankingSystem.entity.User;
 import com.suraev.babyBankingSystem.entity.elasticModel.UserElastic;
 import com.suraev.babyBankingSystem.repository.UserRepository;
-
 import jakarta.annotation.PostConstruct;
-import jakarta.transaction.Transactional;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import com.suraev.babyBankingSystem.entity.elasticModel.PhoneElastic;
 import com.suraev.babyBankingSystem.entity.elasticModel.EmailElastic;
 import lombok.extern.slf4j.Slf4j;
+import com.suraev.babyBankingSystem.entity.Phone;
+import com.suraev.babyBankingSystem.entity.Email;
 
 @Service
 @RequiredArgsConstructor
@@ -54,12 +50,12 @@ public class ElasticsearchInit {
     private UserElastic convertToUserElastic(User user) {
         try {
        return UserElastic.builder()
-       .id(user.getId())
-       .name(user.getName())
-       .phones(user.getPhones().stream().map(phone -> new PhoneElastic(phone.getId(), phone.getNumber(), user.getId())).collect(Collectors.toList()))
-       .emails(user.getEmails().stream().map(email -> new EmailElastic(email.getId(), email.getEmail(), user.getId())).collect(Collectors.toList()))
-       .dateOfBirth(user.getDateOfBirth())
-       .build();
+                        .id(user.getId())
+                        .name(user.getName())
+                        .phones(user.getPhones().stream().map(this::convertToPhoneElastic).collect(Collectors.toList()))
+                        .emails(user.getEmails().stream().map(this::convertToEmailElastic).collect(Collectors.toList()))
+                        .dateOfBirth(user.getDateOfBirth())
+                        .build();
     } catch (Exception e) {
         log.error("error converting user to elasticsearch : {}", user.getId(), e.getMessage());
         return null;
@@ -68,6 +64,12 @@ public class ElasticsearchInit {
 
     private boolean isIndexExists(Class<?> indexType) {
         return elasticsearchOperations.indexOps(indexType).exists();
+    }
+    private PhoneElastic convertToPhoneElastic(Phone phone) {
+        return new PhoneElastic(phone.getId(), phone.getNumber(), phone.getUser().getId());
+    }
+    private EmailElastic convertToEmailElastic(Email email) {
+        return new EmailElastic(email.getId(), email.getEmail(), email.getUser().getId());
     }
 }
 

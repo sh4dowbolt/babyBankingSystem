@@ -5,7 +5,6 @@ import com.suraev.babyBankingSystem.entity.User;
 import com.suraev.babyBankingSystem.entity.elasticModel.UserElastic;
 import com.suraev.babyBankingSystem.repository.UserRepository;
 import com.suraev.babyBankingSystem.util.UserElasticSpecification;
-import com.suraev.babyBankingSystem.util.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -19,11 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.support.PageableExecutionUtils;
 import java.util.List;
 import org.springframework.data.domain.PageImpl;
-
-
+import com.suraev.babyBankingSystem.entity.elasticModel.PhoneElastic;
+import com.suraev.babyBankingSystem.entity.elasticModel.EmailElastic;
 
 @Service
 @RequiredArgsConstructor
@@ -50,16 +48,16 @@ public class UserServiceImpl implements UserService {
 
         NativeQuery query = UserElasticSpecification.buildUserQuery(name, phoneNumber, email, dateOfBirth, pageable);
 
-        List<UserElastic> users = elasticsearchOperations.search(query,UserElastic.class)
-        .map(result -> result.getContent())
-        .stream()
-        .collect(Collectors.toList());
+        List<UserElastic> users = elasticsearchOperations
+                                .search(query,UserElastic.class)
+                                .map(result -> result.getContent())
+                                .stream()
+                                .collect(Collectors.toList());
         
         List<UserDTO> userDTOs = users.stream()
-        .map(this::userToUserDtos)
-        .collect(Collectors.toList());
+                                .map(this::userToUserDtos)
+                                .collect(Collectors.toList());
         
-
         return new PageImpl<>(userDTOs, pageable, elasticsearchOperations.count(query, UserElastic.class));
     }
 
@@ -68,9 +66,15 @@ public class UserServiceImpl implements UserService {
             userElastic.getId(),
             userElastic.getName(),
             userElastic.getDateOfBirth(),
-            userElastic.getPhones().stream().map(phoneElastic -> new PhoneDTO(phoneElastic.getId(), phoneElastic.getPhone(), phoneElastic.getUserId())).collect(Collectors.toList()),
-            userElastic.getEmails().stream().map(emailElastic -> new EmailDTO(emailElastic.getId(), emailElastic.getEmail(), emailElastic.getUserId())).collect(Collectors.toList())
+            userElastic.getPhones().stream().map(this::phoneToPhoneDTO).collect(Collectors.toList()),
+            userElastic.getEmails().stream().map(this::emailToEmailDTO).collect(Collectors.toList())
         );
+    }
+    private PhoneDTO phoneToPhoneDTO(PhoneElastic phoneElastic) {
+        return new PhoneDTO(phoneElastic.getId(), phoneElastic.getPhone(), phoneElastic.getUserId());
+    }
+    private EmailDTO emailToEmailDTO(EmailElastic emailElastic) {
+        return new EmailDTO(emailElastic.getId(), emailElastic.getEmail(), emailElastic.getUserId());
     }
     
     

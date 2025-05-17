@@ -2,11 +2,9 @@ package com.suraev.babyBankingSystem.util;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import lombok.experimental.UtilityClass;
 import com.suraev.babyBankingSystem.exception.UserNotFoundException;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
-
 
 @Component
 @Slf4j

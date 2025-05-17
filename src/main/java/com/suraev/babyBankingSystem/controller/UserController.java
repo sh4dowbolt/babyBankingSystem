@@ -3,7 +3,6 @@ package com.suraev.babyBankingSystem.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
-import com.suraev.babyBankingSystem.entity.User;
 import com.suraev.babyBankingSystem.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +19,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Parameter;
+
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor

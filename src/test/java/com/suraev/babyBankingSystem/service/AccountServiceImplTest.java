@@ -7,14 +7,12 @@ import org.mockito.Mock;
 import com.suraev.babyBankingSystem.repository.AccountRepository;
 import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import com.suraev.babyBankingSystem.entity.Account;
 import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
 import org.springframework.test.util.ReflectionTestUtils;
@@ -24,7 +22,6 @@ import static org.mockito.ArgumentMatchers.any;
 import org.junit.jupiter.api.DisplayName;
 import com.suraev.babyBankingSystem.dto.TransferRequest;
 import java.util.Optional;
-import com.suraev.babyBankingSystem.dto.TransferResponse;
 import com.suraev.babyBankingSystem.exception.AccountSenderNotBeRecipientException;
 import com.suraev.babyBankingSystem.exception.NotEnoughMoneyToTransferException;
 import com.suraev.babyBankingSystem.exception.IncorrectValueException;
@@ -78,7 +75,7 @@ public class AccountServiceImplTest {
         when(accountRepository.findByUserId(2L)).thenReturn(Optional.of(targetAccount));
 
         //when
-        TransferResponse transferResponse = accountService.transferMoney(transferRequest);
+        accountService.transferMoney(transferRequest);
         //then
         assertEquals(BigDecimal.valueOf(0), sourceAccount.getBalance());
         assertEquals(BigDecimal.valueOf(3000), targetAccount.getBalance());

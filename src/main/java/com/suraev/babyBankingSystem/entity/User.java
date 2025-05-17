@@ -1,7 +1,5 @@
 package com.suraev.babyBankingSystem.entity;
 
-import java.util.Date;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -21,11 +19,6 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.io.Serializable;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-
-
-
-
 
 @Entity
 @Getter
