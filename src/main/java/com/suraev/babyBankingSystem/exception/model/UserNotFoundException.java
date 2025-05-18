@@ -1,4 +1,4 @@
-package com.suraev.babyBankingSystem.exception;
+package com.suraev.babyBankingSystem.exception.model;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String message) {

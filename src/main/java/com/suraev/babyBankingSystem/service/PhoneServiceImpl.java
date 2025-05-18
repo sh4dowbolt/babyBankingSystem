@@ -5,10 +5,10 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Optional;  
-import com.suraev.babyBankingSystem.exception.PhoneNumbeNotFoundException;
+import java.util.Optional;
+
 import com.suraev.babyBankingSystem.repository.PhoneRepository;
-import com.suraev.babyBankingSystem.exception.PhoneNumberAlreadyExistsException;
+
 import org.springframework.security.access.AccessDeniedException;
 import com.suraev.babyBankingSystem.entity.User;
 import com.suraev.babyBankingSystem.dto.PhoneDTO;
@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import com.suraev.babyBankingSystem.entity.UserEntityEvent;
 import com.suraev.babyBankingSystem.entity.UserEntityEventType;
+import com.suraev.babyBankingSystem.exception.model.PhoneNumbeNotFoundException;
+import com.suraev.babyBankingSystem.exception.model.PhoneNumberAlreadyExistsException;
 import com.suraev.babyBankingSystem.aop.annotation.OperationLog;
 @Service
 @RequiredArgsConstructor

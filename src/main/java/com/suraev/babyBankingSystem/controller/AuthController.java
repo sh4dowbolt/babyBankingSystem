@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-
+import com.suraev.babyBankingSystem.exception.model.UserNotFoundException;
 
 @RestController
 @RequestMapping("/auth")
@@ -32,17 +32,18 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Login", description = "Login to the system")
-    @ApiResponse(responseCode = "200", description = "Login successful", content = @Content(schema = @Schema(implementation = JwtResponse.class)))
-    @ApiResponse(responseCode = "401", description = "Invalid phone number or password")
+    @ApiResponse(responseCode = "200", description = "Login successful", 
+    content = @Content(schema = @Schema(implementation = JwtResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Invalid request parameters")
     @ApiResponse(responseCode = "404", description = "User not found")
-    @ApiResponse(responseCode = "500", description = "Internal server error")
     public ResponseEntity<JwtResponse> login(@RequestBody @Valid JwtRequest jwtRequest) {
+
         log.debug("Login attempt for phone number: {}", jwtRequest.getPhoneNumber());
         
         User user = userRepository.findByPhoneNumberAndPassword(jwtRequest.getPhoneNumber(), jwtRequest.getPassword())
             .orElseThrow(() -> {
                 log.error("Login failed: Invalid phone number or password for {}", jwtRequest.getPhoneNumber());
-                return new RuntimeException("Invalid phone number or password");
+                return new UserNotFoundException("Invalid phone number or password");
             });
 
         String token = jwtService.generateToken(user.getId());

@@ -9,6 +9,10 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.List;
 import com.suraev.babyBankingSystem.entity.Account;
+import com.suraev.babyBankingSystem.exception.model.AccountSenderNotBeRecipientException;
+import com.suraev.babyBankingSystem.exception.model.IncorrectValueException;
+import com.suraev.babyBankingSystem.exception.model.NotEnoughMoneyToTransferException;
+
 import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,9 +26,6 @@ import static org.mockito.ArgumentMatchers.any;
 import org.junit.jupiter.api.DisplayName;
 import com.suraev.babyBankingSystem.dto.TransferRequest;
 import java.util.Optional;
-import com.suraev.babyBankingSystem.exception.AccountSenderNotBeRecipientException;
-import com.suraev.babyBankingSystem.exception.NotEnoughMoneyToTransferException;
-import com.suraev.babyBankingSystem.exception.IncorrectValueException;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountServiceImplTest {

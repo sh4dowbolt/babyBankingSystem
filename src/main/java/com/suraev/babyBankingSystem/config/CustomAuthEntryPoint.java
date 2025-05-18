@@ -6,11 +6,11 @@ import java.io.IOException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
-import org.springframework.context.annotation.Bean;
 import java.util.LinkedHashMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.AuthenticationException;
 import jakarta.servlet.ServletException;
+
 @Component  
 public class CustomAuthEntryPoint implements AuthenticationEntryPoint {
     

@@ -6,8 +6,11 @@ import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import co.elastic.clients.json.JsonData;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class UserElasticSpecification {
+
 
     public static NativeQuery buildUserQuery(
                                                 String name,
@@ -30,18 +33,28 @@ public class UserElasticSpecification {
 
         if(phoneNumber != null && !phoneNumber.isEmpty()) { 
             boolQueryBuilder.must(Query.of(q->q
-                .term(t->t
-                     .field("phones")
-                .value(phoneNumber)
-            )
-        ));
+                .nested(n->n
+                    .path("phones")
+                    .query( q2->q2
+                        .term(t->t
+                            .field("phones.phone")
+                            .value(phoneNumber)
+                        )
+                    )
+                )
+            ));
         }
 
         if(email != null && !email.isEmpty()) {
             boolQueryBuilder.must(Query.of(q->q
-                .term(t->t
-                    .field("emails")
-                    .value(email)
+                .nested(n->n
+                    .path("emails")
+                    .query(q2->q2
+                        .term(t->t
+                            .field("emails.email")
+                            .value(email)
+                        )
+                    )
                 )
             ));
         }
@@ -49,14 +62,17 @@ public class UserElasticSpecification {
         if (dateOfBirth != null) {
             boolQueryBuilder.must(Query.of(q -> q
                 .range(r -> r
-                    .field("date_of_birth")
-                    .gt(JsonData.of(dateOfBirth.toString()))
+                    .field("dateOfBirth")
+                    .gte(JsonData.of(dateOfBirth.toString()))
                 )
             ));
         }
+        Query query = boolQueryBuilder.build()._toQuery();
+
+        log.info("debug message for boolQueryBuilder, query created: " + query);
 
         return NativeQuery.builder()
-        .withQuery(boolQueryBuilder.build()._toQuery())
+        .withQuery(query)
         .withPageable(pageable)
         .build();
 

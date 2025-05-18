@@ -30,17 +30,14 @@ public class UserController {
     private final UserService userServiceImpl;
 
     @GetMapping
-    @Operation(summary = "Search for users", description = "Search for users by name, phone number, email, or date of birth")
-    @ApiResponse(responseCode = "200", description = "Users found successfully", content = @Content(schema = @Schema(implementation = UserDTO.class)))
+    @Operation(summary = "Search for users", description = "Search for users by name, phone number, email or date of birth")
+    @ApiResponse(responseCode = "200", description = "Users retrieved successfully", content = @Content(schema = @Schema(implementation = UserDTO.class)))
     @ApiResponse(responseCode = "400", description = "Invalid request parameters")
-    @ApiResponse(responseCode = "401", description = "Unauthorized access")
-    @ApiResponse(responseCode = "404", description = "User not found")
-    @ApiResponse(responseCode = "500", description = "Internal server error")
     @SecurityRequirement(name = "JWT")
-    @Parameter(name = "name", description = "Name of the user")
-    @Parameter(name = "phoneNumber", description = "Phone number of the user")
-    @Parameter(name = "email", description = "Email of the user")
-    @Parameter(name = "dateOfBirth", description = "Date of birth of the user")
+    @Parameter(name = "name", description = "Name of the user", example = "Ivan")
+    @Parameter(name = "phoneNumber", description = "Phone number of the user", example = "79274944125")
+    @Parameter(name = "email", description = "Email of the user", example = "ivan@example.com")
+    @Parameter(name = "dateOfBirth", description = "Date of birth of the user", example = "12.12.2020")
     @Parameter(name = "page", description = "Page number")
     @Parameter(name = "size", description = "Number of users per page")
     public Page<UserDTO> searchForUsers(

@@ -31,12 +31,9 @@ public class AccountController {
     @ApiResponse(responseCode = "200", description = "Transfer successful", 
     content = @Content(schema = @Schema(implementation = TransferResponse.class)))
     @ApiResponse(responseCode = "400", description = "Invalid request parameters")
-    @ApiResponse(responseCode = "401", description = "Unauthorized access")
     @ApiResponse(responseCode = "404", description = "Account not found")
-    @ApiResponse(responseCode = "500", description = "Internal server error")
     @SecurityRequirement(name = "JWT")
-    public ResponseEntity<TransferResponse> transferMoney(@RequestBody @Valid
-     @Parameter(description = "Transfer request containing source and target account details") TransferRequest transferRequest) {
+    public ResponseEntity<TransferResponse> transferMoney(@RequestBody @Valid TransferRequest transferRequest) {
 
         Long userId = SecurityUtils.getCurrentUserId();
         transferRequest.setSourceUserId(userId);

@@ -13,8 +13,6 @@ import java.util.Arrays;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 
-
-
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor

@@ -36,9 +36,6 @@ public class PhoneController {
     @Operation(summary = "Add phone number", description = "Add a new phone number")
     @ApiResponse(responseCode = "200", description = "Phone number added successfully", content = @Content(schema = @Schema(implementation = PhoneDTO.class)))
     @ApiResponse(responseCode = "400", description = "Invalid request parameters")
-    @ApiResponse(responseCode = "401", description = "Unauthorized access")
-    @ApiResponse(responseCode = "404", description = "Phone number not found")
-    @ApiResponse(responseCode = "500", description = "Internal server error")
     @SecurityRequirement(name = "JWT")
     public ResponseEntity<PhoneDTO> addPhone(@RequestBody Phone phone) {
 
@@ -53,9 +50,6 @@ public class PhoneController {
     @Operation(summary = "Update phone number", description = "Update an existing phone number")
     @ApiResponse(responseCode = "200", description = "Phone number updated successfully", content = @Content(schema = @Schema(implementation = PhoneDTO.class)))
     @ApiResponse(responseCode = "400", description = "Invalid request parameters")
-    @ApiResponse(responseCode = "401", description = "Unauthorized access")
-    @ApiResponse(responseCode = "404", description = "Phone number not found")
-    @ApiResponse(responseCode = "500", description = "Internal server error")
     @SecurityRequirement(name = "JWT")
     public ResponseEntity<PhoneDTO> updatePhone(@PathVariable Long phoneId,  @Valid @RequestBody Phone phone) {
         
@@ -72,9 +66,6 @@ public class PhoneController {
     @Operation(summary = "Delete phone number", description = "Delete an existing phone number")
     @ApiResponse(responseCode = "204", description = "Phone number deleted successfully")
     @ApiResponse(responseCode = "400", description = "Invalid request parameters")
-    @ApiResponse(responseCode = "401", description = "Unauthorized access")
-    @ApiResponse(responseCode = "404", description = "Phone number not found")
-    @ApiResponse(responseCode = "500", description = "Internal server error")
     @SecurityRequirement(name = "JWT")
     public ResponseEntity<Void> deletePhone(@PathVariable Long phoneId) {
         

@@ -16,14 +16,14 @@ import lombok.AllArgsConstructor;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
-@Entity
 
-@Getter
-@Setter
-@Builder
 @AllArgsConstructor
 @Table(name = "account")
 @Schema(description = "Account")
+@Entity
+@Getter
+@Setter
+@Builder
 public class Account {   
 
     public Account(BigDecimal balance) {

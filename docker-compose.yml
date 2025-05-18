@@ -6,15 +6,23 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgres_db 
-      - elasticsearch
+      postgres_db:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     links:
       - postgres_db
       - elasticsearch
+      - redis
     networks:
       - baby-banking-system-network
-
-
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/babyBankingSystem
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_ELASTICSEARCH_URIS=http://elasticsearch:9200
   postgres_db:
         image: postgres:latest
         container_name: postgres_db
@@ -26,9 +34,9 @@ services:
           timeout: 5s
           retries: 5
         environment:
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=postgres
-            - POSTGRES_DB=babyBankingSystem
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: babyBankingSystem
         volumes:
             - postgres_data:/var/lib/postgresql/data
         networks:
@@ -39,9 +47,8 @@ services:
         container_name: elasticsearch
         ports:
           - 9200:9200 
-          - 9300:9300
         healthcheck:
-          test: ["CMD", "curl", "-f", "http://localhost:9200"]
+          test: ["CMD", "curl", "-f", "http://elasticsearch:9200"]
           interval: 10s
           timeout: 5s
           retries: 5
@@ -52,12 +59,16 @@ services:
           - cluster.name=docker-cluster
           - http.cors.enabled=true
           - http.cors.allow-origin=*
-
         networks:
         - baby-banking-system-network
   redis:
       image: redis:latest
       container_name: redis
+      healthcheck:
+        test: ["CMD", "redis-cli", "ping"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
       ports:
         - 6379:6379
       networks:

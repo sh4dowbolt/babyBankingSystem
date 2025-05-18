@@ -1,6 +1,6 @@
 package com.suraev.babyBankingSystem.config;
 
-import org.springframework.context.annotation.Configuration;
+
 import org.springframework.web.filter.OncePerRequestFilter; 
 import lombok.RequiredArgsConstructor;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,13 +11,9 @@ import java.io.IOException;
 import com.suraev.babyBankingSystem.service.JwtService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
-import com.suraev.babyBankingSystem.exception.JwtAuthenticationException;
-import java.util.Collections;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 
 @Component
 @RequiredArgsConstructor

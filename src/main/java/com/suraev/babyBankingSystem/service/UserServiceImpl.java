@@ -22,9 +22,10 @@ import java.util.List;
 import org.springframework.data.domain.PageImpl;
 import com.suraev.babyBankingSystem.entity.elasticModel.PhoneElastic;
 import com.suraev.babyBankingSystem.entity.elasticModel.EmailElastic;
-
+import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -39,12 +40,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true) 
     public Page<UserDTO> searchForUsers(
-        String name, 
-        String phoneNumber,
-        String email,
-        LocalDate dateOfBirth,
-        Pageable pageable
-    ) {
+                                        String name, 
+                                        String phoneNumber,
+                                        String email,
+                                        LocalDate dateOfBirth,
+                                        Pageable pageable
+                                        ) {
 
         NativeQuery query = UserElasticSpecification.buildUserQuery(name, phoneNumber, email, dateOfBirth, pageable);
 
@@ -57,7 +58,9 @@ public class UserServiceImpl implements UserService {
         List<UserDTO> userDTOs = users.stream()
                                 .map(this::userToUserDtos)
                                 .collect(Collectors.toList());
-        
+
+        log.info("searching for users: " + userDTOs);
+
         return new PageImpl<>(userDTOs, pageable, elasticsearchOperations.count(query, UserElastic.class));
     }
 

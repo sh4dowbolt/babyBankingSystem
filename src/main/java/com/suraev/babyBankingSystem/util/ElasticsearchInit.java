@@ -29,6 +29,9 @@ public class ElasticsearchInit {
         try {
         if (!isIndexExists(UserElastic.class)) {
 
+            elasticsearchOperations.indexOps(UserElastic.class).delete();
+            elasticsearchOperations.indexOps(UserElastic.class).create();
+            elasticsearchOperations.indexOps(UserElastic.class).putMapping();
             log.info("intializing elasticsearch index for users");
         
             List<User> users = userRepository.findAll();

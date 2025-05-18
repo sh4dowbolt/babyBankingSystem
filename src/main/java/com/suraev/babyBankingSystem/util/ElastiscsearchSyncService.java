@@ -6,8 +6,9 @@ import com.suraev.babyBankingSystem.entity.User;
 import com.suraev.babyBankingSystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.suraev.babyBankingSystem.exception.UserNotFoundException;
+
 import com.suraev.babyBankingSystem.entity.elasticModel.UserElastic;
+import com.suraev.babyBankingSystem.exception.model.UserNotFoundException;
 import com.suraev.babyBankingSystem.entity.elasticModel.PhoneElastic;
 import com.suraev.babyBankingSystem.entity.elasticModel.EmailElastic;
 import com.suraev.babyBankingSystem.entity.Phone;
@@ -36,7 +37,7 @@ public class ElastiscsearchSyncService {
             log.error("error syncing user with id : {}", userId, e.getMessage());
         }
     }
-
+    
     private UserElastic convertToUserElastic(User user) {
         try {
         return UserElastic.builder()
