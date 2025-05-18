@@ -6,7 +6,6 @@ import com.suraev.babyBankingSystem.entity.User;
 import com.suraev.babyBankingSystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import com.suraev.babyBankingSystem.entity.elasticModel.UserElastic;
 import com.suraev.babyBankingSystem.exception.model.UserNotFoundException;
 import com.suraev.babyBankingSystem.entity.elasticModel.PhoneElastic;
@@ -41,19 +40,17 @@ public class ElastiscsearchSyncService {
     private UserElastic convertToUserElastic(User user) {
         try {
         return UserElastic.builder()
-        .id(user.getId())
-        .name(user.getName())
-        .phones(user.getPhones().stream().map(this::convertToPhoneElastic).collect(Collectors.toList()))
-        .emails(user.getEmails().stream().map(this::convertToEmailElastic).collect(Collectors.toList()))
-        .dateOfBirth(user.getDateOfBirth())
-        .build();
+                        .id(user.getId())
+                        .name(user.getName())
+                        .phones(user.getPhones().stream().map(this::convertToPhoneElastic).collect(Collectors.toList()))
+                        .emails(user.getEmails().stream().map(this::convertToEmailElastic).collect(Collectors.toList()))
+                        .dateOfBirth(user.getDateOfBirth())
+                        .build();
     } catch (Exception e) {
         log.error("error converting user to elasticsearch : {}", user.getId(), e.getMessage());
         return null;
     }
     }
-
-
 
     private PhoneElastic convertToPhoneElastic(Phone phone) {
         return PhoneElastic.builder()

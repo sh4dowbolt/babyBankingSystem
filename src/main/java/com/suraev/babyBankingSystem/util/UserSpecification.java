@@ -3,13 +3,12 @@ package com.suraev.babyBankingSystem.util;
 import org.springframework.data.jpa.domain.Specification;
 import com.suraev.babyBankingSystem.entity.User;
 import lombok.experimental.UtilityClass;
-
 import java.time.LocalDate;
 
-
+@Deprecated(forRemoval = true)
 @UtilityClass
+//TODO: remove this class after elasticsearch is implemented
 public class UserSpecification {
-
 
     public static Specification<User> hasName(String name){
         return (root, query, criteriaBuilder) ->

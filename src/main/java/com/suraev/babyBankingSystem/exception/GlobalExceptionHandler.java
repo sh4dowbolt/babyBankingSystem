@@ -19,9 +19,6 @@ import com.suraev.babyBankingSystem.exception.model.UserNotFoundException;
 import com.suraev.babyBankingSystem.exception.model.LuckPrivilegeException;
 
 
-import org.springframework.validation.FieldError;
-
-
 @RestControllerAdvice   
 public class GlobalExceptionHandler {
 
@@ -29,18 +26,22 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
     @ExceptionHandler(PhoneNumbeNotFoundException.class)
     public ResponseEntity<String> handlePhoneNumbeNotFoundException(PhoneNumbeNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
     @ExceptionHandler(LuckPrivilegeException.class)
     public ResponseEntity<String> handleLuckPrivilegeException(LuckPrivilegeException ex) {
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    
     @ExceptionHandler(PhoneNumberAlreadyExistsException.class)
     public ResponseEntity<String> handlePhoneNumberAlreadyExistsException(PhoneNumberAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<String> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
@@ -61,18 +62,22 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleJwtAuthenticationException(JwtAuthenticationException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
+
     @ExceptionHandler(NotEnoughMoneyToTransferException.class)
     public ResponseEntity<String> handleNotEnoughMoneyToTransferException(NotEnoughMoneyToTransferException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
     @ExceptionHandler(IncorrectValueException.class)
     public ResponseEntity<String> handleIncorrectValueException(IncorrectValueException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
     @ExceptionHandler(AccountSenderNotBeRecipientException.class)
     public ResponseEntity<String> handleAccountSenderNotBeRecipientException(AccountSenderNotBeRecipientException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -81,6 +86,7 @@ public class GlobalExceptionHandler {
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<String> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);

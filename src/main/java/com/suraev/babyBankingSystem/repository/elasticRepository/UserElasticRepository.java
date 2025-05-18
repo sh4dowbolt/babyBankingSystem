@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserElasticRepository extends ElasticsearchRepository<UserElastic, Long> {
 
-   
 }

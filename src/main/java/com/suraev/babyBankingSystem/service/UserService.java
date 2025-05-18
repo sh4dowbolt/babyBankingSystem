@@ -10,6 +10,7 @@ import com.suraev.babyBankingSystem.dto.UserDTO;
 
 @Service
 public interface UserService {
+    
     Optional<User> getUser(Long id);
     Page<UserDTO> searchForUsers(String name, String phoneNumber, String email, LocalDate dateOfBirth, Pageable pageable);
     

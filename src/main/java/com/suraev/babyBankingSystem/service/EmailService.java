@@ -8,9 +8,14 @@ import com.suraev.babyBankingSystem.dto.EmailResponse;
 
 public interface EmailService {
     
-    Optional<Email> getEmail(Long id);    
+    Optional<Email> getEmail(Long id);   
+
     List<Email> getAllEmails();
+
     EmailResponse createEmail(EmailRequest email);
+
     EmailResponse updateEmail(Long emailId, EmailRequest email);
+
     void deleteEmail(Long id);
+    
 }

@@ -111,7 +111,7 @@ public class EmailServiceImpl implements EmailService {
     public void deleteEmail(Long id) {
 
         Long userId = SecurityUtils.getCurrentUserId();
-        
+
         Email existingEmail = emailRepository.findById(id)
         .orElseThrow(() -> new EmailNotFoundException("Email not found"));
 

@@ -26,28 +26,27 @@ public class ElasticsearchInit {
     @PostConstruct
     public void initElasticsearchData() {
 
-        try {
-        if (!isIndexExists(UserElastic.class)) {
+            try {
+            if (!isIndexExists(UserElastic.class)) {
 
-            elasticsearchOperations.indexOps(UserElastic.class).delete();
-            elasticsearchOperations.indexOps(UserElastic.class).create();
-            elasticsearchOperations.indexOps(UserElastic.class).putMapping();
-            log.info("intializing elasticsearch index for users");
-        
-            List<User> users = userRepository.findAll();
-            List<UserElastic> userElastic = users.stream()
-                .map(this::convertToUserElastic)
-                .collect(Collectors.toList());  
+                elasticsearchOperations.indexOps(UserElastic.class).create();
+                elasticsearchOperations.indexOps(UserElastic.class).putMapping();
+                log.info("intializing elasticsearch index for users");
+            
+                List<User> users = userRepository.findAll();
+                List<UserElastic> userElastic = users.stream()
+                                                    .map(this::convertToUserElastic)
+                                                    .collect(Collectors.toList());  
 
-             elasticsearchOperations.save(userElastic);
+                elasticsearchOperations.save(userElastic);
 
-        log.info("succesfully initialized elasticsearch index for users");
-        } else {
-            log.info("elasticsearch index for users already exists, skipping initialization");
-        }
-    } catch (Exception e) {
-        log.error("error initializing elasticsearch index for users", e);
-    }
+            log.info("succesfully initialized elasticsearch index for users");
+            } else {
+                log.info("elasticsearch index for users already exists, skipping initialization");
+            }
+        } catch (Exception e) {
+                log.error("error initializing elasticsearch index for users", e);
+            }
     }
 
     private UserElastic convertToUserElastic(User user) {

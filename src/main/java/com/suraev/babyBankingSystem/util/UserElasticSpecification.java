@@ -72,9 +72,9 @@ public class UserElasticSpecification {
         log.info("debug message for boolQueryBuilder, query created: " + query);
 
         return NativeQuery.builder()
-        .withQuery(query)
-        .withPageable(pageable)
-        .build();
+                        .withQuery(query)
+                        .withPageable(pageable)
+                        .build();
 
     }
 }

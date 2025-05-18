@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.suraev.babyBankingSystem.dto.EmailRequest;
-import com.suraev.babyBankingSystem.dto.PhoneDTO;
 import com.suraev.babyBankingSystem.dto.UserDTO;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
@@ -23,6 +21,9 @@ import org.springframework.data.domain.PageImpl;
 import com.suraev.babyBankingSystem.entity.elasticModel.PhoneElastic;
 import com.suraev.babyBankingSystem.entity.elasticModel.EmailElastic;
 import lombok.extern.slf4j.Slf4j;
+import com.suraev.babyBankingSystem.dto.PhoneDTO;
+import com.suraev.babyBankingSystem.dto.EmailDTO;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -76,9 +77,8 @@ public class UserServiceImpl implements UserService {
     private PhoneDTO phoneToPhoneDTO(PhoneElastic phoneElastic) {
         return new PhoneDTO(phoneElastic.getId(), phoneElastic.getPhone(), phoneElastic.getUserId());
     }
-    private EmailRequest emailToEmailDTO(EmailElastic emailElastic) {
-        return new EmailRequest(emailElastic.getId(), emailElastic.getEmail(), emailElastic.getUserId());
+    private EmailDTO emailToEmailDTO(EmailElastic emailElastic) {
+        return new EmailDTO(emailElastic.getId(), emailElastic.getEmail(), emailElastic.getUserId());
     }
-    
     
 }

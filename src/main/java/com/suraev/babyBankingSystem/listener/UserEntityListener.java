@@ -12,11 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class UserEntityListener {
+    
     private final ElastiscsearchSyncService syncService;
 
     @EventListener
     public void onUserEntityEvent(UserEntityEvent event) {
+
         log.info("handling user entity event: {}", event);
+
         syncService.syncUser(event.getUserId());
     }
     

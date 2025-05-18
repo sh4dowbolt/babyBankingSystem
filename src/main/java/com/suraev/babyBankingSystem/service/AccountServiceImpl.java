@@ -9,19 +9,15 @@ import com.suraev.babyBankingSystem.exception.model.AccountNotFoundException;
 import com.suraev.babyBankingSystem.exception.model.AccountSenderNotBeRecipientException;
 import com.suraev.babyBankingSystem.exception.model.IncorrectValueException;
 import com.suraev.babyBankingSystem.exception.model.NotEnoughMoneyToTransferException;
-
 import java.util.List;
-
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import com.suraev.babyBankingSystem.dto.TransferRequest;
 import com.suraev.babyBankingSystem.dto.TransferResponse;
 import java.math.BigDecimal;
-
 import com.suraev.babyBankingSystem.aop.annotation.FinancialLog;
 import org.springframework.beans.factory.annotation.Value;
-    
 
 @Service
 @RequiredArgsConstructor
