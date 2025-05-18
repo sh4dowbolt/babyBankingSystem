@@ -18,6 +18,7 @@ import com.suraev.babyBankingSystem.dto.TransferResponse;
 import java.math.BigDecimal;
 import com.suraev.babyBankingSystem.aop.annotation.FinancialLog;
 import org.springframework.beans.factory.annotation.Value;
+import com.suraev.babyBankingSystem.util.SecurityUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -49,8 +50,10 @@ public class AccountServiceImpl implements AccountService{
     @FinancialLog(operation = "TRANSFER_MONEY")
     public TransferResponse transferMoney(TransferRequest transferDTO) {
 
+        Long sourceUserId = SecurityUtils.getCurrentUserId();
+
         BigDecimal value = transferDTO.getValue();
-        Long sourceUserId = transferDTO.getSourceUserId();
+
         Long targetUserId = transferDTO.getTargetUserId();
 
         if(!isValueValid(value)) {

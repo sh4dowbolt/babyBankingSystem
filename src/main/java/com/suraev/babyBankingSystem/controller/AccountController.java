@@ -35,8 +35,6 @@ public class AccountController {
     @SecurityRequirement(name = "JWT")
     public ResponseEntity<TransferResponse> transferMoney(@RequestBody @Valid TransferRequest transferRequest) {
 
-        Long userId = SecurityUtils.getCurrentUserId();
-        transferRequest.setSourceUserId(userId);
         TransferResponse response = accountService.transferMoney(transferRequest);
 
         return ResponseEntity.ok(response);

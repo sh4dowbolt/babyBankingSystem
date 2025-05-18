@@ -13,9 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Builder
 @Schema(description = "Transfer request")
 public class TransferRequest {
-    @Nullable
-    @Schema(description = "Source user ID", example = "1")
-    private Long sourceUserId;
+    
     @Schema(description = "Target user ID", example = "2")
     private Long targetUserId;
     @Schema(description = "Value", example = "100.00")
