@@ -7,15 +7,7 @@ import java.util.Map;
 import java.util.HashMap;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import com.suraev.babyBankingSystem.exception.model.AccessDeniedException;
 import com.suraev.babyBankingSystem.exception.model.AccountSenderNotBeRecipientException;
 import com.suraev.babyBankingSystem.exception.model.EmailAlreadyExistsException;
 import com.suraev.babyBankingSystem.exception.model.IncorrectValueException;
@@ -25,6 +17,7 @@ import com.suraev.babyBankingSystem.exception.model.PhoneNumbeNotFoundException;
 import com.suraev.babyBankingSystem.exception.model.PhoneNumberAlreadyExistsException;
 import com.suraev.babyBankingSystem.exception.model.UserNotFoundException;
 import com.suraev.babyBankingSystem.exception.model.LuckPrivilegeException;
+
 
 import org.springframework.validation.FieldError;
 
@@ -92,6 +85,5 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
-}
 }
 
