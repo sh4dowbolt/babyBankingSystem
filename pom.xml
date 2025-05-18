@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.suraev</groupId>
 	<artifactId>babyBankingSystem</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>undefined</version>
 	<name>babyBankingSystem</name>
 	<description>Baby banking system</description>
 	<url/>
@@ -18,7 +18,11 @@
 		<license/>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+		<name>Suraev Vitaly</name>
+		<email>suraevvvitaly@gmail.com</email>
+		<organizationUrl>https://github.com/sh4dowbolt/babyBankingSystem</organizationUrl>
+		</developer>
 	</developers>
 	<scm>
 		<connection/>
@@ -30,6 +34,14 @@
 		<java.version>17</java.version>
 		<testcontainers.version>1.19.3</testcontainers.version>
    		<spring-boot.version>3.2.0</spring-boot.version>
+		<elasticsearch.version>3.1.5</elasticsearch.version>
+		<lombok.version>1.18.30</lombok.version>
+		<jwt.version>0.9.1</jwt.version>
+		<liquibase.version>4.31.1</liquibase.version>
+		<swagger.version>2.1.0</swagger.version>
+		<redis-testcontainers.version>2.2.2</redis-testcontainers.version>
+		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+		<maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -51,7 +63,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-			<version>3.1.5</version>
+			<version>${elasticsearch.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -64,7 +76,7 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
-			<version>0.9.1</version>
+			<version>${jwt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -84,12 +96,12 @@
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-			<version>4.31.1</version>
+			<version>${liquibase.version}</version>
 		</dependency>
 		   <dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.1.0</version>
+			<version>${swagger.version}</version>
    		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
@@ -128,7 +140,7 @@
 		<dependency>
 			<groupId>com.redis</groupId>
 			<artifactId>testcontainers-redis</artifactId>
-			<version>2.2.2</version>
+			<version>${redis-testcontainers.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -138,13 +150,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>1.18.30</version>
+							<version>${lombok.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
@@ -164,7 +176,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.5.3</version>
+				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
 					<includes>
 						<include>**/*Test.java</include>

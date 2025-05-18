@@ -5,9 +5,10 @@ import org.aspectj.lang.annotation.Around;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 import com.suraev.babyBankingSystem.aop.annotation.FinancialLog;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import com.suraev.babyBankingSystem.dto.TransferRequest;
-
+import com.suraev.babyBankingSystem.util.SecurityUtils;
 
 @Aspect 
 @Component
@@ -25,7 +26,7 @@ public class FinancialAspect {
            log.info("Starting financial operation: {} from user {} to user {} with amount: {}", 
 
            financialLog.operation(), 
-           request.getSourceUserId(), 
+           SecurityUtils.getCurrentUserId(),
            request.getTargetUserId(), 
            request.getValue());
         }
