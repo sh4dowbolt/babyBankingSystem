@@ -15,7 +15,7 @@ import lombok.Builder;
 import lombok.AllArgsConstructor;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
-
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @Table(name = "account")
@@ -24,6 +24,7 @@ import jakarta.validation.constraints.Min;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 public class Account {   
 
     public Account(BigDecimal balance) {

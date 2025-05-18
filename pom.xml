@@ -42,6 +42,7 @@
 		<redis-testcontainers.version>2.2.2</redis-testcontainers.version>
 		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
 		<maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+		<spring-boot-starter-data-redis.version>3.2.0</spring-boot-starter-data-redis.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -72,6 +73,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<version>${spring-boot-starter-data-redis.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>

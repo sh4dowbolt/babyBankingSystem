@@ -23,6 +23,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_ELASTICSEARCH_URIS=http://elasticsearch:9200
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
   postgres_db:
         image: postgres:latest
         container_name: postgres_db
@@ -62,7 +64,7 @@ services:
         networks:
         - baby-banking-system-network
   redis:
-      image: redis:latest
+      image: redis:7.0-alpine
       container_name: redis
       healthcheck:
         test: ["CMD", "redis-cli", "ping"]
@@ -71,12 +73,15 @@ services:
         retries: 5
       ports:
         - 6379:6379
+      volumes:
+        - redis_data:/data
       networks:
         - baby-banking-system-network
 
 volumes:
   postgres_data:
   elasticsearch_data:
+  redis_data:
 networks:
   baby-banking-system-network:
     driver: bridge
