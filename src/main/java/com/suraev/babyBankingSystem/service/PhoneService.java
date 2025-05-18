@@ -4,13 +4,15 @@ import java.util.List;
 import java.util.Optional;  
 import com.suraev.babyBankingSystem.entity.Phone;   
 import com.suraev.babyBankingSystem.dto.PhoneDTO;
+import com.suraev.babyBankingSystem.dto.PhoneRequest;
+import com.suraev.babyBankingSystem.dto.PhoneResponse;
 
 public interface PhoneService { 
 
     Optional<Phone> getPhone(Long id);
     List<Phone> getAllPhones();
-    PhoneDTO createPhone(Phone phone, Long userId);
-    PhoneDTO updatePhone(Long phoneId, PhoneDTO phoneDTO);
-    void deletePhone(Long id, Long userId);
+    PhoneResponse createPhone(PhoneRequest phoneDTO);
+    PhoneResponse updatePhone(Long phoneId, PhoneRequest phoneDTO);
+    void deletePhone(Long id);
 
 }

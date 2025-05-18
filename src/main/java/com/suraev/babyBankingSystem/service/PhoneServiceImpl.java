@@ -19,6 +19,9 @@ import com.suraev.babyBankingSystem.entity.UserEntityEventType;
 import com.suraev.babyBankingSystem.exception.model.PhoneNumbeNotFoundException;
 import com.suraev.babyBankingSystem.exception.model.PhoneNumberAlreadyExistsException;
 import com.suraev.babyBankingSystem.aop.annotation.OperationLog;
+import com.suraev.babyBankingSystem.dto.PhoneRequest;
+import com.suraev.babyBankingSystem.dto.PhoneResponse;
+import com.suraev.babyBankingSystem.util.SecurityUtils;
 @Service
 @RequiredArgsConstructor
 public class PhoneServiceImpl implements PhoneService {
@@ -40,27 +43,39 @@ public class PhoneServiceImpl implements PhoneService {
     @Override
     @Transactional
     @OperationLog(operation = "CREATE_PHONE")
-    public PhoneDTO createPhone(Phone phone, Long userId) {
+    public PhoneResponse createPhone(PhoneRequest phoneDTO) {
+
+        Long userId = SecurityUtils.getCurrentUserId();
+
         User user = userServiceImpl.getUser(userId).get();
-        String phoneNumber = phone.getNumber();
+
+        String phoneNumber = phoneDTO.getNumber();
 
         if(phoneRepository.existsByNumber(phoneNumber)){
             throw new PhoneNumberAlreadyExistsException("Phone number already exists");
         }
-        phone.setUser(user);
-        Phone savedPhone = phoneRepository.save(phone);
+        Phone phoneToSave = phoneRequestToPhone(user, phoneNumber);
+        Phone savedPhone = phoneRepository.save(phoneToSave);
         publishEvent(savedPhone, UserEntityEventType.CREATE);
         
-        return new PhoneDTO(savedPhone.getId(), savedPhone.getNumber(), savedPhone.getUser().getId());
+        return new PhoneResponse(savedPhone.getId(), savedPhone.getNumber(), savedPhone.getUser().getId());
+    }
+
+    private Phone phoneRequestToPhone(User user, String phoneNumber){
+        Phone phone = new Phone();
+        phone.setNumber(phoneNumber);
+        phone.setUser(user);
+        return phone;
     }
 
     @Override
     @Transactional
     @OperationLog(operation = "UPDATE_PHONE")
-    public PhoneDTO updatePhone(Long phoneId, PhoneDTO phoneDTO) {
+    public PhoneResponse updatePhone(Long phoneId, PhoneRequest phoneDTO) {
         
-        String phoneNumber = phoneDTO.number();
-        Long userId = phoneDTO.userId();
+        Long userId = SecurityUtils.getCurrentUserId();
+
+        String phoneNumber = phoneDTO.getNumber();
 
         Phone existingPhone = phoneRepository.findById(phoneId)
         .orElseThrow(() -> new PhoneNumbeNotFoundException("Phone not found"));
@@ -75,17 +90,21 @@ public class PhoneServiceImpl implements PhoneService {
             throw new AccessDeniedException("You can only update your own phone number");
         }
     
-       
         existingPhone.setNumber(phoneNumber);
         Phone updatedPhone = phoneRepository.save(existingPhone);
+
         publishEvent(updatedPhone, UserEntityEventType.UPDATE);
-        return new PhoneDTO(updatedPhone.getId(), updatedPhone.getNumber(), updatedPhone.getUser().getId());
+
+        return new PhoneResponse(updatedPhone.getId(), updatedPhone.getNumber(), updatedPhone.getUser().getId());
     }   
 
     @Override
     @Transactional
     @OperationLog(operation = "DELETE_PHONE")
-    public void deletePhone(Long id, Long userId) { 
+    public void deletePhone(Long id) { 
+
+        Long userId = SecurityUtils.getCurrentUserId();
+
         Phone existingPhone = phoneRepository.findById(id)  
         .orElseThrow(() -> new PhoneNumbeNotFoundException("Phone not found"));
 
@@ -95,6 +114,8 @@ public class PhoneServiceImpl implements PhoneService {
             throw new AccessDeniedException("You can only delete your own phone number");
         }
         phoneRepository.deleteById(id);
+
+        publishEvent(existingPhone, UserEntityEventType.DELETE);
     }
 
     private void publishEvent(Phone phone, UserEntityEventType eventType){

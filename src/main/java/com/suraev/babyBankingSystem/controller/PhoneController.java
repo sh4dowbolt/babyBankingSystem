@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import com.suraev.babyBankingSystem.dto.PhoneRequest;
 
 @RestController
 @RequestMapping("/phone")
@@ -34,13 +35,14 @@ public class PhoneController {
 
     @PostMapping
     @Operation(summary = "Add phone number", description = "Add a new phone number")
-    @ApiResponse(responseCode = "200", description = "Phone number added successfully", content = @Content(schema = @Schema(implementation = PhoneDTO.class)))
+    @ApiResponse(responseCode = "201", description = "Phone number added successfully",
+     content = @Content(schema = @Schema(implementation = PhoneDTO.class)))
     @ApiResponse(responseCode = "400", description = "Invalid request parameters")
     @SecurityRequirement(name = "JWT")
-    public ResponseEntity<PhoneDTO> addPhone(@RequestBody Phone phone) {
+    public ResponseEntity<PhoneDTO> addPhone(@RequestBody PhoneRequest phoneDTO) {
 
-        Long userId = SecurityUtils.getCurrentUserId();
-        PhoneDTO newPhone = phoneServiceImpl.createPhone(phone, userId);    
+        PhoneDTO newPhone = phoneServiceImpl.createPhone(phoneDTO);   
+         
         return ResponseEntity.ok(newPhone);
 
     }
