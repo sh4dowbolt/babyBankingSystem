@@ -40,11 +40,12 @@ There are functions for deep, flexible search users, update them, transfer money
 2. **Authentication**:
    - Simple JWT-authethication with `USER_ID` in claims. Authenticition available by phone + password.
    You can authorize by next users:
-| № | pnhone number | password      |
-|---|---------------|---------------|
-|   | 79991234567   | password123   |
-|   | 78881234567   | securepass456 |
-|   | 77771234567   | qwerty789     |
+
+      | № | pnhone number | password      |
+      |---|---------------|---------------|
+      | 1 | 79991234567   | password123   |
+      | 2 | 78881234567   | securepass456 |
+      | 3 | 77771234567   | qwerty789     |
 
 3. **Search users**:
    - Filtration by `name`, `email`, `phone` и `dateOfBirth` using Elasticsearch.
