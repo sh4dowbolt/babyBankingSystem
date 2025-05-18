@@ -34,12 +34,17 @@ import com.suraev.babyBankingSystem.entity.User;
 import static org.mockito.Mockito.doNothing;
 import com.suraev.babyBankingSystem.config.TestConfig;
 import org.junit.jupiter.api.AfterAll;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import com.suraev.babyBankingSystem.config.JwtTestConfig;
+import org.springframework.context.annotation.Import;
+
 
 @SpringBootTest
+@Testcontainers
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Import(TestConfig.class)
-public class EmailControllerIT {
+@Import(JwtTestConfig.class)
+public class EmailControllerIT extends TestConfig {
 
     @Autowired
     private MockMvc mockMvc;
@@ -49,44 +54,37 @@ public class EmailControllerIT {
     private EmailService emailServiceImpl;
     @Autowired
     private JwtService jwtService;
-    private static ElasticsearchContainer elasticsearchContainer;
 
-    static {
-        elasticsearchContainer = new ElasticsearchContainer(
-            DockerImageName.parse("docker.elastic.co/elasticsearch/elasticsearch:7.17.10"))
-            .withExposedPorts(9200)
-            .withEnv("discovery.type", "single-node")
-            .withEnv("xpack.security.enabled", "false")
-            .withEnv("ES_JAVA_OPTS", "-Xms512m -Xmx512m")
-            // Добавляем дополнительные настройки
-            .withEnv("cluster.name", "elasticsearch-test")
-            .withEnv("bootstrap.memory_lock", "true")
-            .withEnv("action.auto_create_index", "true")
-            // Увеличиваем время ожидания запуска
-            .waitingFor(
-                Wait.forLogMessage(".*started.*", 1)
-                    .withStartupTimeout(Duration.ofMinutes(2))
-            );
+    // static {
+    //     elasticsearchContainer = new ElasticsearchContainer(
+    //         DockerImageName.parse("docker.elastic.co/elasticsearch/elasticsearch:7.17.10"))
+    //         .withExposedPorts(9200)
+    //         .withEnv("discovery.type", "single-node")
+    //         .withEnv("xpack.security.enabled", "false")
+    //         .withEnv("ES_JAVA_OPTS", "-Xms512m -Xmx512m")
+    //         // Добавляем дополнительные настройки
+    //         .withEnv("cluster.name", "elasticsearch-test")
+    //         .withEnv("bootstrap.memory_lock", "true")
+    //         .withEnv("action.auto_create_index", "true")
+    //         // Увеличиваем время ожидания запуска
+    //         .waitingFor(
+    //             Wait.forLogMessage(".*started.*", 1)
+    //                 .withStartupTimeout(Duration.ofMinutes(2))
+    //         );
 
-        try {
-            elasticsearchContainer.start();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to start Elasticsearch container", e);
-        }
-    }
+    //     try {
+    //         elasticsearchContainer.start();
+    //     } catch (Exception e) {
+    //         throw new RuntimeException("Failed to start Elasticsearch container", e);
+    //     }
+    // }
    
-    @DynamicPropertySource
-    static void elasticsearchProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.elasticsearch.uris", 
-            () -> "http://localhost:" + elasticsearchContainer.getMappedPort(9200));
-    }
-
-    @AfterAll
-    static void stopElasticsearchContainer() {
-        if (elasticsearchContainer != null) {
-            elasticsearchContainer.close();
-        }
-    }
+    // @AfterAll
+    // static void stopElasticsearchContainer() {
+    //     if (elasticsearchContainer != null) {
+    //         elasticsearchContainer.close();
+    //     }
+    // }
 
     private static final Long USER_ID = 1L;
     private static final String USER_EMAIL = "suraevvvitaly@gmail.com";
