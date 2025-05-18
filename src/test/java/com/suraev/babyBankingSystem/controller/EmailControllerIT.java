@@ -16,7 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import com.suraev.babyBankingSystem.entity.Email;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import com.suraev.babyBankingSystem.dto.EmailDTO;
+import com.suraev.babyBankingSystem.dto.EmailRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -103,7 +103,7 @@ public class EmailControllerIT extends TestConfig {
         User user = new User();
         user.setId(USER_ID);
         Email emailToCreate = Email.builder().email(USER_EMAIL).build();
-        EmailDTO emailDTO = new EmailDTO(1L, USER_EMAIL, USER_ID);
+        EmailRequest emailDTO = new EmailRequest(1L, USER_EMAIL, USER_ID);
 
         when(emailServiceImpl.createEmail(any(Email.class), eq(USER_ID))).thenReturn(emailDTO);
 
@@ -127,7 +127,7 @@ public class EmailControllerIT extends TestConfig {
         // given
         Long emailId = 1L;
         String emailToUpdate = USER_EMAIL;
-        EmailDTO emailDTO = new EmailDTO(emailId, emailToUpdate, USER_ID);
+        EmailRequest emailDTO = new EmailRequest(emailId, emailToUpdate, USER_ID);
 
         when(emailServiceImpl.updateEmail(eq(emailId), eq(emailDTO))).thenReturn(emailDTO);
 
@@ -140,7 +140,7 @@ public class EmailControllerIT extends TestConfig {
                 .andExpect(jsonPath("$.email").value(emailToUpdate))
                 .andDo(print());
 
-        verify(emailServiceImpl).updateEmail(eq(emailId), any(EmailDTO.class));
+        verify(emailServiceImpl).updateEmail(eq(emailId), any(EmailRequest.class));
     }
 
     @Test
@@ -180,7 +180,7 @@ public class EmailControllerIT extends TestConfig {
     void updateEmailByNotAuthenticatedUser() throws Exception {
         // given
         Long emailId = 1L;
-        EmailDTO invalidEmailDTO = new EmailDTO(emailId, "invalid_format_email", USER_ID);
+        EmailRequest invalidEmailDTO = new EmailRequest(emailId, "invalid_format_email", USER_ID);
 
         // when
         mockMvc.perform(MockMvcRequestBuilders.put("/email/{id}", emailId)

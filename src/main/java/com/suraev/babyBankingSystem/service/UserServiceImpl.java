@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.suraev.babyBankingSystem.dto.EmailDTO;
+import com.suraev.babyBankingSystem.dto.EmailRequest;
 import com.suraev.babyBankingSystem.dto.PhoneDTO;
 import com.suraev.babyBankingSystem.dto.UserDTO;
 import java.time.LocalDate;
@@ -76,8 +76,8 @@ public class UserServiceImpl implements UserService {
     private PhoneDTO phoneToPhoneDTO(PhoneElastic phoneElastic) {
         return new PhoneDTO(phoneElastic.getId(), phoneElastic.getPhone(), phoneElastic.getUserId());
     }
-    private EmailDTO emailToEmailDTO(EmailElastic emailElastic) {
-        return new EmailDTO(emailElastic.getId(), emailElastic.getEmail(), emailElastic.getUserId());
+    private EmailRequest emailToEmailDTO(EmailElastic emailElastic) {
+        return new EmailRequest(emailElastic.getId(), emailElastic.getEmail(), emailElastic.getUserId());
     }
     
     

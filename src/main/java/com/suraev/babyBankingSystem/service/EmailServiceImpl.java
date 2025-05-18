@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import com.suraev.babyBankingSystem.entity.User;
 
 import org.springframework.security.access.AccessDeniedException;
-import com.suraev.babyBankingSystem.dto.EmailDTO;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import com.suraev.babyBankingSystem.entity.UserEntityEvent;
@@ -17,6 +16,11 @@ import com.suraev.babyBankingSystem.entity.UserEntityEventType;
 import com.suraev.babyBankingSystem.exception.model.EmailAlreadyExistsException;
 import com.suraev.babyBankingSystem.exception.model.EmailNotFoundException;
 import com.suraev.babyBankingSystem.aop.annotation.OperationLog;
+import com.suraev.babyBankingSystem.dto.EmailResponse;
+import com.suraev.babyBankingSystem.dto.EmailRequest;
+import com.suraev.babyBankingSystem.util.SecurityUtils;
+import com.suraev.babyBankingSystem.service.EmailService;
+
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +32,14 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     @Transactional(readOnly = true)
+    @OperationLog(operation = "GET_EMAIL")
     public Optional<Email> getEmail(Long id) {
         return emailRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
+    @OperationLog(operation = "GET_ALL_EMAILS")
     public List<Email> getAllEmails() {
         return emailRepository.findAll();
     }
@@ -41,28 +47,42 @@ public class EmailServiceImpl implements EmailService {
     @Override
     @Transactional
     @OperationLog(operation = "CREATE_EMAIL")
-    public EmailDTO createEmail(Email email, Long userId) {
-        
+    public EmailResponse createEmail(EmailRequest emailRequest) {
+
+        Long userId = SecurityUtils.getCurrentUserId();
+    
         User user = userServiceImpl.getUser(userId).get();
-        String emailAddress = email.getEmail();
+
+        String emailAddress = emailRequest.getEmail();
 
         if(emailRepository.existsByEmail(emailAddress)){
             throw new EmailAlreadyExistsException("Email already exists");
         }
-        email.setUser(user);
-        Email savedEmail = emailRepository.save(email);
+
+        Email emailToSave = emailRequestToEmail(user, emailAddress);
+
+        Email savedEmail = emailRepository.save(emailToSave);
 
         publishEvent(savedEmail, UserEntityEventType.CREATE);
-       
-        return new EmailDTO(savedEmail.getId(), savedEmail.getEmail(), savedEmail.getUser().getId());
+
+        return new EmailResponse(savedEmail.getId(), savedEmail.getEmail(), savedEmail.getUser().getId());
+    }
+
+    private Email emailRequestToEmail(User user, String emailAddress){
+        Email email = new Email();
+        email.setEmail(emailAddress);
+        email.setUser(user);
+        return email;
     }
   
     @Override
     @Transactional
     @OperationLog(operation = "UPDATE_EMAIL")
-    public EmailDTO updateEmail(Long emailId, EmailDTO emailDTO) {
-        String emailAddress = emailDTO.email();
-        Long userId = emailDTO.userId();
+    public EmailResponse updateEmail(Long emailId, EmailRequest emailDTO) {
+        
+        Long userId = SecurityUtils.getCurrentUserId();
+
+        String emailAddress = emailDTO.getEmail();
 
         Email existingEmail = emailRepository.findById(emailId)
         .orElseThrow(() -> new EmailNotFoundException("Email not found"));
@@ -79,15 +99,19 @@ public class EmailServiceImpl implements EmailService {
       
         existingEmail.setEmail(emailAddress);
         Email updatedEmail = emailRepository.save(existingEmail);
+
         publishEvent(updatedEmail, UserEntityEventType.UPDATE);
         
-        return new EmailDTO(updatedEmail.getId(),updatedEmail.getEmail(), updatedEmail.getUser().getId());
+        return new EmailResponse(updatedEmail.getId(),updatedEmail.getEmail(), updatedEmail.getUser().getId());
     }
 
     @Override   
     @Transactional
     @OperationLog(operation = "DELETE_EMAIL")
-    public void deleteEmail(Long id, Long userId) {
+    public void deleteEmail(Long id) {
+
+        Long userId = SecurityUtils.getCurrentUserId();
+        
         Email existingEmail = emailRepository.findById(id)
         .orElseThrow(() -> new EmailNotFoundException("Email not found"));
 

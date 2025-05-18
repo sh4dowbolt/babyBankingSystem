@@ -34,7 +34,7 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "Users retrieved successfully", content = @Content(schema = @Schema(implementation = UserDTO.class)))
     @ApiResponse(responseCode = "400", description = "Invalid request parameters")
     @SecurityRequirement(name = "JWT")
-    @Parameter(name = "name", description = "Name of the user", example = "Ivan")
+    @Parameter(name = "name", description = "Name of the user", example = "Иван")
     @Parameter(name = "phoneNumber", description = "Phone number of the user", example = "79274944125")
     @Parameter(name = "email", description = "Email of the user", example = "ivan@example.com")
     @Parameter(name = "dateOfBirth", description = "Date of birth of the user", example = "12.12.2020")

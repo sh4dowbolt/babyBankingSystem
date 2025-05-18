@@ -22,5 +22,5 @@ public class UserDTO {
     @Schema(description = "Phones")
     private List<PhoneDTO> phones;
     @Schema(description = "Emails")
-    private List<EmailDTO> emails;
+    private List<EmailRequest> emails;
 }

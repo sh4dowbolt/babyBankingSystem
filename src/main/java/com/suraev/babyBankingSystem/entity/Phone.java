@@ -14,11 +14,12 @@ import jakarta.persistence.JoinColumn;
 import java.io.Serializable;    
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+
+
 @Entity
 @Table(name = "phone")
 @Getter
 @Setter
-
 public class Phone implements Serializable{
 
     private static final long serialVersionUID = 3L;
