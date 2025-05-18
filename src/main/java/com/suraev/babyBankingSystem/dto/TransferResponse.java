@@ -9,5 +9,6 @@ public record TransferResponse(
     Long sourceUserId, 
     @Schema(description = "Target user ID", example = "2")
     Long targetUserId, 
+    @Schema(description = "Value", example = "100.00")
     BigDecimal value) {
 }

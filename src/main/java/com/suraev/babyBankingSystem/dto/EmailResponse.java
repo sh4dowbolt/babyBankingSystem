@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@Schema(description = "Email Response")
+@Schema(description = "Email Response DTO")
 @Getter
 @Setter
 @AllArgsConstructor

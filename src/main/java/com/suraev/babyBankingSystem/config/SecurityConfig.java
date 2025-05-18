@@ -23,6 +23,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+
         http
         .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configurationSource(request -> {
@@ -42,6 +43,7 @@ public class SecurityConfig {
         .exceptionHandling(exception -> exception
             .authenticationEntryPoint(authenticationEntryPoint))
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        
         return http.build();
     }
 }

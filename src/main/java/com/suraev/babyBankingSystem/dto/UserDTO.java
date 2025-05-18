@@ -5,14 +5,19 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import com.suraev.babyBankingSystem.dto.PhoneDTO;
+import com.suraev.babyBankingSystem.dto.EmailDTO;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Schema(description = "User DTO")   
 public class UserDTO {
+    
     @Schema(description = "ID", example = "1")
     private Long id;
     @Schema(description = "Name", example = "John Doe")
@@ -22,5 +27,5 @@ public class UserDTO {
     @Schema(description = "Phones")
     private List<PhoneDTO> phones;
     @Schema(description = "Emails")
-    private List<EmailRequest> emails;
+    private List<EmailDTO> emails;
 }

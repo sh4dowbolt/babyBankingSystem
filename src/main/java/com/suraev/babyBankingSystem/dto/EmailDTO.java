@@ -10,13 +10,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Phone DTO for User DTO")
-public class PhoneDTO {
+@Schema(description = "Email DTO for User DTO")
+public class EmailDTO {
 
     @Schema(description = "ID", example = "1")
     private Long id;
-    @Schema(description = "Number", example = "79999999999")
-    private String number;
+    @Schema(description = "Email", example = "test@test.com")
+    private String email;
     @Schema(description = "User ID", example = "1")
     private Long userId;
 

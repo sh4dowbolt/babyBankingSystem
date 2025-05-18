@@ -16,8 +16,11 @@ public class CrudAspect {
 
     @Around("@annotation(operationLog)")
     public Object logOperation(ProceedingJoinPoint joinPoint, OperationLog operationLog) throws Throwable {
+
         String methodName = joinPoint.getSignature().getName();
+
         String className = joinPoint.getTarget().getClass().getSimpleName();
+        
         Object[] args = joinPoint.getArgs();    
 
         log.info("Starting operation: {} in : {}", operationLog.operation(), className, Arrays.toString(args));

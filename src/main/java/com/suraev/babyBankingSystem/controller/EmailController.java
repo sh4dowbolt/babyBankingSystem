@@ -66,9 +66,7 @@ public class EmailController {
     @SecurityRequirement(name = "JWT")
     public ResponseEntity<Void> deleteEmail(@PathVariable Long id) {
         
-        Long userId = SecurityUtils.getCurrentUserId();
-
-        emailServiceImpl.deleteEmail(id, userId);
+        emailServiceImpl.deleteEmail(id);
         
         return ResponseEntity.noContent().build();
     }

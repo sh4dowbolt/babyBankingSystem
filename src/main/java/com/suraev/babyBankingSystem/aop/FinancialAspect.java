@@ -21,7 +21,9 @@ public class FinancialAspect {
         Object[] args = joinPoint.getArgs();
 
         if(args.length > 0 && args[0] instanceof TransferRequest request){
+
            log.info("Starting financial operation: {} from user {} to user {} with amount: {}", 
+
            financialLog.operation(), 
            request.getSourceUserId(), 
            request.getTargetUserId(), 
@@ -30,10 +32,14 @@ public class FinancialAspect {
 
         try {
             Object result = joinPoint.proceed();
+
             log.info("Successfully completed financial operation: {}", methodName);
+
             return result;
         } catch (Throwable e) { 
+
             log.error("Failed financial operation: {}, error: {}", methodName, e.getMessage());
+            
            throw e;
         }
     }

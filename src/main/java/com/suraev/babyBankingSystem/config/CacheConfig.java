@@ -14,12 +14,11 @@ import java.time.Duration;
 public class CacheConfig {
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-        .entryTtl(Duration.ofMinutes(30))
-        .disableCachingNullValues();    
+                                        .entryTtl(Duration.ofMinutes(30))
+                                        .disableCachingNullValues();    
         
-        return RedisCacheManager.builder(connectionFactory)
-        .cacheDefaults(config)
-        .build();
+        return RedisCacheManager.builder(connectionFactory).cacheDefaults(config).build();
     }
 }

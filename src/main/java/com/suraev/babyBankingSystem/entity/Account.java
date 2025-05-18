@@ -14,7 +14,7 @@ import lombok.Setter;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 import io.swagger.v3.oas.annotations.media.Schema;
-
+import jakarta.validation.constraints.Min;
 
 
 @AllArgsConstructor
@@ -28,9 +28,7 @@ public class Account {
 
     public Account(BigDecimal balance) {
         this.balance = balance;
-    }
-
-    public Account() {
+        this.initialBalance = balance;
     }
 
     @Id
@@ -41,8 +39,10 @@ public class Account {
     @Column(name = "initial_balance")
     @Schema(description = "Initial balance", example = "100.00")
     private BigDecimal initialBalance;
+
     @Column(name = "balance")
     @Schema(description = "Balance", example = "100.00")
+    @Min(value = 0, message = "Balance must be greater than 0")
     private BigDecimal balance;
 
     @OneToOne
@@ -50,27 +50,26 @@ public class Account {
     @Schema(description = "User")
     private User user;
 
-    
-
     public boolean increaseBalance(BigDecimal percentToIncrease, BigDecimal maxPercentToIncrease) {
        
-    BigDecimal maxBalance = initialBalance.multiply(maxPercentToIncrease);
+        BigDecimal maxBalance = initialBalance.multiply(maxPercentToIncrease);
 
-    if(balance.abs().compareTo(maxBalance) >= 0) {
-        balance = maxBalance;
-        return false;
-    } 
+            if(balance.abs().compareTo(maxBalance) >= 0) {
+                balance = maxBalance;
+                return false;
+            } 
 
-    int sign = balance.signum();
+        int sign = balance.signum();
 
-    BigDecimal newBalance = balance.abs().multiply(percentToIncrease);
-    
-    if(newBalance.compareTo(maxBalance) > 0) {
-        balance = maxBalance;
-        return false;
-    }
-    balance = sign < 0 ? newBalance.negate() : newBalance;
-    return true;
+        BigDecimal newBalance = balance.abs().multiply(percentToIncrease);
         
+            if(newBalance.compareTo(maxBalance) > 0) {
+                balance = maxBalance;
+                return false;
+            }
+
+        balance = sign < 0 ? newBalance.negate() : newBalance;
+
+        return true;
  }
 }
