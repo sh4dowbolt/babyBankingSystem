@@ -7,7 +7,6 @@ import com.suraev.babyBankingSystem.repository.EmailRepository;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import com.suraev.babyBankingSystem.entity.User;
-
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
@@ -18,8 +17,8 @@ import com.suraev.babyBankingSystem.exception.model.EmailNotFoundException;
 import com.suraev.babyBankingSystem.aop.annotation.OperationLog;
 import com.suraev.babyBankingSystem.dto.EmailResponse;
 import com.suraev.babyBankingSystem.dto.EmailRequest;
-import com.suraev.babyBankingSystem.util.SecurityUtils;
 import com.suraev.babyBankingSystem.service.EmailService;
+import com.suraev.babyBankingSystem.util.SecurityUtils;
 
 
 @Service

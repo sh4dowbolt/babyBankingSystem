@@ -1,10 +1,5 @@
 package com.suraev.babyBankingSystem.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.boot.test.context.TestConfiguration;
-import com.suraev.babyBankingSystem.service.JwtService;
-import com.suraev.babyBankingSystem.service.JwtServiceImpl;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -16,16 +11,13 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.testcontainers.containers.GenericContainer;
+import org.junit.jupiter.api.AfterAll;
 
-//import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
-
-//@EnableElasticsearchRepositories(basePackages = "com.suraev.babyBankingSystem.repository")
 @SpringBootTest
 @Testcontainers
 public abstract class TestConfig {
   
-    
     @Container
 	static PostgreSQLContainer<?> pSqlContainer = new PostgreSQLContainer<>("postgres:15-alpine")
 		.withDatabaseName("test_db")
@@ -67,7 +59,8 @@ public abstract class TestConfig {
     }
 
     @Container
-    static GenericContainer<?> redisContainer = new GenericContainer<>(DockerImageName.parse("redis:7.4.1"))
+    static GenericContainer<?> redisContainer = new GenericContainer<>(DockerImageName
+		.parse("redis:7.4.1"))
         .withExposedPorts(6379)
         .waitingFor(
             Wait.forLogMessage(".*Ready to accept connections.*", 1)
@@ -79,6 +72,22 @@ public abstract class TestConfig {
         registry.add("spring.data.redis.host", redisContainer::getHost);
         registry.add("spring.data.redis.port", () -> redisContainer.getMappedPort(6379));
     }
+
+	@AfterAll
+	static void tearDown() {
+		if (pSqlContainer != null) {
+			pSqlContainer.stop();
+			System.out.println("PostgreSQL has been stopped");
+		}
+		if (elasticsearch != null) {
+			elasticsearch.stop();
+			System.out.println("Elasticsearch has been stopped");
+		}
+		if (redisContainer != null) {
+			redisContainer.stop();
+			System.out.println("Redis has been stopped");
+		}
+	}
 
 }
 

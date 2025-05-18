@@ -13,7 +13,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
-import com.suraev.babyBankingSystem.entity.Email;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import com.suraev.babyBankingSystem.dto.EmailRequest;
@@ -23,20 +22,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.mockito.Mockito.verify;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.springframework.context.annotation.Import;
-import org.testcontainers.utility.DockerImageName;
-import org.testcontainers.containers.wait.strategy.Wait;
-import java.time.Duration;
-import com.suraev.babyBankingSystem.entity.User;
 import static org.mockito.Mockito.doNothing;
 import com.suraev.babyBankingSystem.config.TestConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.suraev.babyBankingSystem.config.JwtTestConfig;
-import org.springframework.context.annotation.Import;
+import com.suraev.babyBankingSystem.dto.EmailResponse;
 
 
 @SpringBootTest
@@ -55,37 +47,6 @@ public class EmailControllerIT extends TestConfig {
     @Autowired
     private JwtService jwtService;
 
-    // static {
-    //     elasticsearchContainer = new ElasticsearchContainer(
-    //         DockerImageName.parse("docker.elastic.co/elasticsearch/elasticsearch:7.17.10"))
-    //         .withExposedPorts(9200)
-    //         .withEnv("discovery.type", "single-node")
-    //         .withEnv("xpack.security.enabled", "false")
-    //         .withEnv("ES_JAVA_OPTS", "-Xms512m -Xmx512m")
-    //         // Добавляем дополнительные настройки
-    //         .withEnv("cluster.name", "elasticsearch-test")
-    //         .withEnv("bootstrap.memory_lock", "true")
-    //         .withEnv("action.auto_create_index", "true")
-    //         // Увеличиваем время ожидания запуска
-    //         .waitingFor(
-    //             Wait.forLogMessage(".*started.*", 1)
-    //                 .withStartupTimeout(Duration.ofMinutes(2))
-    //         );
-
-    //     try {
-    //         elasticsearchContainer.start();
-    //     } catch (Exception e) {
-    //         throw new RuntimeException("Failed to start Elasticsearch container", e);
-    //     }
-    // }
-   
-    // @AfterAll
-    // static void stopElasticsearchContainer() {
-    //     if (elasticsearchContainer != null) {
-    //         elasticsearchContainer.close();
-    //     }
-    // }
-
     private static final Long USER_ID = 1L;
     private static final String USER_EMAIL = "suraevvvitaly@gmail.com";
     private String jwtToken;
@@ -99,26 +60,25 @@ public class EmailControllerIT extends TestConfig {
     @Test
     @DisplayName("create email successfully")
     void createEmailSuccessfully() throws Exception {
-        // given
-        User user = new User();
-        user.setId(USER_ID);
-        Email emailToCreate = Email.builder().email(USER_EMAIL).build();
-        EmailRequest emailDTO = new EmailRequest(1L, USER_EMAIL, USER_ID);
 
-        when(emailServiceImpl.createEmail(any(Email.class), eq(USER_ID))).thenReturn(emailDTO);
+        // given
+        EmailRequest emailToCreate = new EmailRequest(USER_EMAIL);
+        EmailResponse emailDTO = new EmailResponse(1L, USER_EMAIL, USER_ID);
+
+        when(emailServiceImpl.createEmail(any(EmailRequest.class))).thenReturn(emailDTO);
 
         // when
         mockMvc.perform(MockMvcRequestBuilders.post("/email")
                 .header("Authorization", "Bearer " + jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(emailToCreate)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.email").value(USER_EMAIL))
                 .andExpect(jsonPath("$.userId").value(USER_ID))
                 .andDo(print());
 
-        verify(emailServiceImpl).createEmail(any(Email.class), eq(USER_ID));
+        verify(emailServiceImpl).createEmail(any(EmailRequest.class));
     }
 
     @Test
@@ -126,18 +86,18 @@ public class EmailControllerIT extends TestConfig {
     void updateEmailSuccessfully() throws Exception {
         // given
         Long emailId = 1L;
-        String emailToUpdate = USER_EMAIL;
-        EmailRequest emailDTO = new EmailRequest(emailId, emailToUpdate, USER_ID);
+        EmailRequest emailToUpdate = new EmailRequest(USER_EMAIL);
+        EmailResponse emailDTO = new EmailResponse(emailId, USER_EMAIL, USER_ID);
 
-        when(emailServiceImpl.updateEmail(eq(emailId), eq(emailDTO))).thenReturn(emailDTO);
+        when(emailServiceImpl.updateEmail(eq(emailId), any(EmailRequest.class))).thenReturn(emailDTO);
 
         // when
         mockMvc.perform(MockMvcRequestBuilders.put("/email/{id}", emailId)
                 .header("Authorization", "Bearer " + jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(emailDTO)))
+                .content(objectMapper.writeValueAsString(emailToUpdate)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value(emailToUpdate))
+                .andExpect(jsonPath("$.email").value(USER_EMAIL))
                 .andDo(print());
 
         verify(emailServiceImpl).updateEmail(eq(emailId), any(EmailRequest.class));
@@ -148,7 +108,7 @@ public class EmailControllerIT extends TestConfig {
     void deleteEmailSuccessfully() throws Exception {
         // given
         Long emailId = 1L;
-        doNothing().when(emailServiceImpl).deleteEmail(emailId, USER_ID);
+        doNothing().when(emailServiceImpl).deleteEmail(emailId);
 
         // when
         mockMvc.perform(MockMvcRequestBuilders.delete("/email/{id}", emailId)
@@ -156,17 +116,14 @@ public class EmailControllerIT extends TestConfig {
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        verify(emailServiceImpl).deleteEmail(emailId, USER_ID);
+        verify(emailServiceImpl).deleteEmail(emailId);
     }
 
     @Test
     @DisplayName("create email by not authenticated user")
     void createEmailByNotAuthenticatedUser() throws Exception {
         // given
-        User user = new User();
-        user.setId(USER_ID);
-        Email emailToCreate = new Email(1L, USER_EMAIL, user);
-
+        EmailRequest emailToCreate = new EmailRequest(USER_EMAIL);
         // when
         mockMvc.perform(MockMvcRequestBuilders.post("/email")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -180,7 +137,7 @@ public class EmailControllerIT extends TestConfig {
     void updateEmailByNotAuthenticatedUser() throws Exception {
         // given
         Long emailId = 1L;
-        EmailRequest invalidEmailDTO = new EmailRequest(emailId, "invalid_format_email", USER_ID);
+        EmailRequest invalidEmailDTO = new EmailRequest("invalid_format_email");
 
         // when
         mockMvc.perform(MockMvcRequestBuilders.put("/email/{id}", emailId)
@@ -190,4 +147,3 @@ public class EmailControllerIT extends TestConfig {
                 .andDo(print());
     }
 }
-

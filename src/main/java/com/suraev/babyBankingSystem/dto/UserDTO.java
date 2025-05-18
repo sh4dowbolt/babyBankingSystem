@@ -2,14 +2,11 @@ package com.suraev.babyBankingSystem.dto;
 
 import java.time.LocalDate;
 import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import io.swagger.v3.oas.annotations.media.Schema;
-import com.suraev.babyBankingSystem.dto.PhoneDTO;
-import com.suraev.babyBankingSystem.dto.EmailDTO;
 
 @Getter
 @Setter
@@ -17,7 +14,7 @@ import com.suraev.babyBankingSystem.dto.EmailDTO;
 @NoArgsConstructor
 @Schema(description = "User DTO")   
 public class UserDTO {
-    
+
     @Schema(description = "ID", example = "1")
     private Long id;
     @Schema(description = "Name", example = "John Doe")

@@ -1,7 +1,6 @@
 package com.suraev.babyBankingSystem.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import com.suraev.babyBankingSystem.service.JwtService;
 import com.suraev.babyBankingSystem.service.JwtServiceImpl;
