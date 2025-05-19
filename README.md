@@ -6,7 +6,7 @@ There are functions for deep, flexible search users, update them, transfer money
 
 ## Stack
 - **Programming language**: Java 17
-- **Framework**: Soring Boot
+- **Framework**: Spring Boot
 - **Database**: PostgreSQL
 - **Project management**: Maven
 - **Extra tools**:
@@ -69,7 +69,7 @@ There are functions for deep, flexible search users, update them, transfer money
 - **Integration tests**: Using Testcontainers for test API with MockMvc, Redis, Elasticsearch, PGSql
 
 ## Structure of the database
-Tables accoring to the scheme:
+Tables according to the scheme:
 - `USER`: Main data of users
 - `ACCOUNT`: Balances of ursers
 - `EMAIL` и `PHONE`: Conctact data about users
