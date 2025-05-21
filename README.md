@@ -25,6 +25,7 @@ There are functions for deep, flexible search users, update them, transfer money
    ```bash
    git clone https://github.com/sh4dowbolt/babyBankingSystem.git
    cd babyBankingSystem
+   mvn clean install 
    ```
 2. Launch docker-compose project
    ```bash 
