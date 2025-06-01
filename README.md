@@ -93,7 +93,7 @@ Tables according to the scheme:
 
 ## Documentation
 Swagger UI available by:  
-`http://localhost:8080/swagger-ui.html`
+`http://localhost:8080/api/v1/swagger-ui.html`
 
 ## Links
 - [GitHub Repository](<https://github.com/sh4dowbolt/babyBankingSystem.git>)
